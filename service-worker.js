@@ -1,10 +1,10 @@
-const CACHE_NAME="elu-rehearsal-v1";
+const CACHE_NAME="elu-rehearsal-v2";
 const APP_ASSETS=[
   "./",
   "./index.html",
-  "./styles.css?v=rehearsal1",
-  "./data.js?v=rehearsal1",
-  "./app.js?v=rehearsal1",
+  "./styles.css?v=rehearsal2",
+  "./data.js?v=rehearsal2",
+  "./app.js?v=rehearsal2",
   "./jszip.min.js",
   "./manifest.webmanifest",
   "./icon-192.png",

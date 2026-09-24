@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b5ea8">
   <title>ELU Upgrading — Rehearsal App</title>
-  <link rel="stylesheet" href="styles.css?v=rehearsal1">
+  <link rel="stylesheet" href="styles.css?v=rehearsal2">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -53,7 +53,7 @@
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">ELU</div>
+        <div class="brand-mark brand-mark-app"><img src="icon-192.png" alt="ELU"></div>
         <div>
           <div class="brand-name">Upgrading</div>
           <div class="brand-sub">Command Centre</div>
@@ -98,51 +98,95 @@
       </header>
 
       <section class="view active" id="dashboard">
-        <div class="command-hero">
-          <div class="command-copy">
-            <div class="command-kicker"><span class="live-dot"></span> ELU UPGRADING · PR3 COMMAND CENTRE</div>
-            <p>Survey, appointment, unit status and weekly progress — connected to one master register across all 6 zones.</p>
-            <div class="hero-tags"><span>6 Zones</span><span>38 Blocks</span><span id="heroTagUnits">2,341 Units</span><span class="sync-tag">Excel schedule synced</span></div>
-          </div>
-          <div class="hero-orbit-wrap">
-            <div class="hero-orbit" id="heroOrbit">
-              <div class="hero-orbit-inner"><strong id="heroCompletionPct">0%</strong><span>Completed</span></div>
+        <div class="app-command-hero">
+          <div class="app-hero-copy">
+            <div class="app-hero-kicker"><span class="live-dot"></span> PR3 COMMAND CENTRE</div>
+            <h2>ELU Upgrading – Pasir Ris</h2>
+            <p>Survey, appointments, unit status and weekly progress — one clear command view across all 6 zones.</p>
+            <div class="app-hero-stats">
+              <span><b>6</b><small>Zones</small></span>
+              <span><b>38</b><small>Blocks</small></span>
+              <span><b id="heroTagUnits">2,341</b><small>Total Units</small></span>
+              <span class="hero-sync"><b>✓</b><small>Schedule synced</small></span>
             </div>
-            <div class="hero-orbit-caption"><strong id="heroTotalUnits">0</strong><span>Total project units</span></div>
+          </div>
+
+          <div class="app-hero-progress-wrap">
+            <div class="app-hero-ring" id="heroOrbit">
+              <div class="app-hero-ring-inner">
+                <strong id="heroCompletionPct">0%</strong>
+                <span>COMPLETED</span>
+              </div>
+            </div>
+            <div class="app-hero-total"><strong id="heroTotalUnits">0</strong><span>Total project units</span></div>
+          </div>
+
+          <div class="app-skyline" aria-hidden="true">
+            <i class="bldg b1"></i><i class="bldg b2"></i><i class="bldg b3"></i>
+            <i class="bldg b4"></i><i class="bldg b5"></i><i class="tree t1"></i><i class="tree t2"></i>
           </div>
         </div>
 
-        <div class="kpi-grid premium-kpis">
+        <div class="kpi-grid premium-kpis app-kpi-grid">
           <article class="kpi-card accent-green"><div class="kpi-icon green"><svg><use href="#i-check"/></svg></div><div><span>Opt-In Agree</span><strong id="kpiOptIn">0</strong><small id="kpiOptInPct">A + C</small></div></article>
-          <article class="kpi-card accent-pink"><div class="kpi-icon pink"><svg><use href="#i-calendar"/></svg></div><div><span>Confirmation · C</span><strong id="kpiAppointments">0</strong><small>Active confirmed appointments</small></div></article>
-          <article class="kpi-card accent-blue"><div class="kpi-icon blue">◷</div><div><span>Pending Confirmation · P</span><strong id="kpiPending">0</strong><small>Resident responded · date waiting</small></div></article>
+          <article class="kpi-card accent-pink"><div class="kpi-icon pink"><svg><use href="#i-calendar"/></svg></div><div><span>Confirmation</span><strong id="kpiAppointments">0</strong><small>Active confirmed</small></div></article>
+          <article class="kpi-card accent-blue"><div class="kpi-icon blue">◷</div><div><span>Pending Confirmation</span><strong id="kpiPending">0</strong><small>Date waiting</small></div></article>
           <article class="kpi-card accent-cyan"><div class="kpi-icon cyan"><svg><use href="#i-building"/></svg></div><div><span>Work Completed</span><strong id="kpiCompleted">0</strong><small id="kpiCompletedPct">0%</small></div></article>
-          <article class="kpi-card accent-amber"><div class="kpi-icon amber">NR</div><div><span>No Response</span><strong id="kpiNR">0</strong><small>Requires follow-up</small></div></article>
-          <article class="kpi-card accent-rose"><div class="kpi-icon rose">D</div><div><span>Opt-Out</span><strong id="kpiOptOut">0</strong><small>Resident declined</small></div></article>
-          <article class="kpi-card accent-violet"><div class="kpi-icon violet"><svg><use href="#i-survey"/></svg></div><div><span>Survey Visits</span><strong id="kpiFollowups">0</strong><small>Upcoming visit appointments</small></div></article>
+          <article class="kpi-card accent-amber"><div class="kpi-icon amber">•••</div><div><span>No Response</span><strong id="kpiNR">0</strong><small>Requires follow-up</small></div></article>
+          <article class="kpi-card accent-rose"><div class="kpi-icon rose">×</div><div><span>Opt-Out</span><strong id="kpiOptOut">0</strong><small>Resident declined</small></div></article>
+          <article class="kpi-card accent-violet"><div class="kpi-icon violet"><svg><use href="#i-survey"/></svg></div><div><span>Survey Visits</span><strong id="kpiFollowups">0</strong><small>Upcoming visits</small></div></article>
         </div>
 
-        <div class="dashboard-grid dashboard-grid-wow">
-          <article class="panel zone-panel">
-            <div class="panel-head"><div><span class="section-label">ZONE PERFORMANCE</span><h3>Project pulse by zone</h3><p>Completion is calculated from the master unit data.</p></div><span class="panel-badge">LIVE</span></div>
-            <div id="zoneProgress" class="zone-progress zone-card-grid"></div>
+        <div class="app-dashboard-main-grid">
+          <article class="panel app-today-panel">
+            <div class="app-panel-title">
+              <div><span class="section-label">TODAY</span><h3>Today's Appointments</h3></div>
+              <button class="text-btn" data-go="teams">View Schedule</button>
+            </div>
+            <div id="dashboardTodayAppointments" class="app-today-list"></div>
           </article>
 
-          <article class="panel appointment-panel">
-            <div class="panel-head"><div><span class="section-label">NEXT ACTIONS</span><h3>Upcoming confirmations</h3><p>Existing Excel schedules are already loaded.</p></div><button class="text-btn" data-go="appointments">View schedule</button></div>
-            <div id="upcomingAppointments" class="compact-list premium-compact-list"></div>
+          <article class="panel app-photo-panel">
+            <div class="app-panel-title">
+              <div><span class="section-label">PHOTO WORK</span><h3>Photo Workflow Today</h3></div>
+              <button class="text-btn" data-go="photos">View All</button>
+            </div>
+            <div class="app-photo-summary">
+              <div class="app-photo-ring" id="dashboardPhotoRing">
+                <div><strong id="dashboardPhotoPct">0%</strong><span>READY</span></div>
+              </div>
+              <div class="app-photo-stats">
+                <div><i class="dot-ready"></i><strong id="dashboardPhotoUnits">0</strong><span>Photo units</span></div>
+                <div><i class="dot-blue"></i><strong id="dashboardPhotoReady">0</strong><span>Ready 3+</span></div>
+                <div><i class="dot-grey"></i><strong id="dashboardPhotoCount">0</strong><span>Photos stored</span></div>
+              </div>
+            </div>
+            <div id="dashboardPhotoRecent" class="app-photo-recent"></div>
+          </article>
+
+          <article class="panel app-quick-panel">
+            <div class="app-panel-title"><div><span class="section-label">SHORTCUTS</span><h3>Quick Actions</h3></div></div>
+            <div class="app-quick-actions">
+              <button type="button" data-go="teams"><span>📅</span><div><strong>View Schedule</strong><small>Today's appointments</small></div><b>›</b></button>
+              <button type="button" data-go="photos"><span>📷</span><div><strong>Upload Photos</strong><small>Open Photo Report</small></div><b>›</b></button>
+              <button type="button" id="dashboardBackupQuick"><span>💾</span><div><strong>Backup Data</strong><small>Create latest backup</small></div><b>›</b></button>
+              <button type="button" id="dashboardLockQuick"><span>🔒</span><div><strong>Lock Application</strong><small>Secure this app</small></div><b>›</b></button>
+            </div>
+          </article>
+
+          <article class="panel app-zone-panel">
+            <div class="app-panel-title">
+              <div><span class="section-label">ZONE PERFORMANCE</span><h3>Project Progress by Zone</h3></div>
+              <span class="panel-badge">LIVE</span>
+            </div>
+            <div id="zoneProgress" class="app-zone-progress"></div>
+          </article>
+
+          <article class="panel app-activity-panel">
+            <div class="app-panel-title"><div><span class="section-label">RECENT</span><h3>Recent Activity</h3></div></div>
+            <div id="dashboardRecentActivity" class="app-activity-list"></div>
           </article>
         </div>
-
-        <article class="panel today-team-panel">
-          <div class="panel-head"><div><span class="section-label">TODAY · TEAM SCHEDULE</span><h3>Today's appointment deployment</h3><p>Each Zone is separated first, with Team 1 and Team 2 shown inside that Zone.</p></div><button class="text-btn" data-go="teams">Open Planner</button></div>
-          <div id="todayTeamBoard" class="today-team-board"></div>
-        </article>
-
-        <article class="panel attention-panel">
-          <div class="panel-head"><div><span class="section-label">FIELD VISITS</span><h3>Upcoming survey visits</h3></div><button class="text-btn" data-go="survey">Open Survey</button></div>
-          <div id="followupAttention" class="attention-grid"></div>
-        </article>
       </section>
 
       <section class="view" id="blockboard">
@@ -584,9 +628,9 @@
   </aside>
 
   <div class="toast" id="toast"></div>
-  <script src="data.js?v=rehearsal1"></script>
+  <script src="data.js?v=rehearsal2"></script>
   <script src="jszip.min.js"></script>
-<script src="app.js?v=rehearsal1"></script>
+<script src="app.js?v=rehearsal2"></script>
 
 <div id="rehearsalAppBadge" style="
 position:fixed;left:14px;bottom:14px;z-index:99998;

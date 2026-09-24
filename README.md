@@ -627,3 +627,12 @@ The workbook's `Progress Summary` does not fully agree with some detailed unit r
 - Open Appointment jumps to the matching Appointment Schedule record for correction.
 - Photo workflow from V7.52 is unchanged.
 - Unit Register, Block Board, Dashboard, Survey, Complaints, Meeting Report, photo IndexedDB, encryption key and saved project data are unchanged.
+
+
+## Rehearsal V2 — Premium Dashboard Design
+- Rehearsal-only visual redesign of the Dashboard.
+- Production ELU repository is not touched.
+- Existing rehearsal storage isolation is unchanged.
+- Added app-style hero, compact KPI cards, today's appointments, photo workflow summary, quick actions, zone progress and recent activity.
+- Existing Appointment, Unit, Block, Survey, Photo and Meeting Report screens are unchanged.
+- Service-worker cache bumped to `elu-rehearsal-v2` so installed desktop/mobile apps can receive the update.

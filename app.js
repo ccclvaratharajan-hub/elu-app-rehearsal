@@ -457,6 +457,9 @@ function setView(view){
 }
 document.getElementById("nav").addEventListener("click",e=>{const b=e.target.closest(".nav-item");if(b)setView(b.dataset.view)});
 document.body.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)setView(b.dataset.go)});
+document.getElementById("dashboardBackupQuick")?.addEventListener("click",()=>document.getElementById("exportBackupBtn")?.click());
+document.getElementById("dashboardLockQuick")?.addEventListener("click",()=>document.getElementById("securityLogoutBtn")?.click());
+
 
 function zoneOptions(includeAll=false){return(includeAll?`<option value="all">All Zones</option>`:"")+Object.keys(ZONE_BLOCKS).map(z=>`<option value="${z}">Zone ${z}</option>`).join("")}
 function blockOptions(zone){return(ZONE_BLOCKS[zone]||[]).map(b=>`<option value="${b}">Blk ${b}</option>`).join("")}
@@ -568,21 +571,119 @@ document.getElementById("plannerSlot").addEventListener("change",togglePlannerCu
 document.getElementById("appointmentSlot").addEventListener("change",toggleAppointmentCustomTime);
 
 function renderDashboard(){
-  const u=unitsArray(),total=u.length,a=u.filter(x=>x.response==="A").length,c=u.filter(x=>x.response==="C").length,p=u.filter(x=>x.response==="P").length,d=u.filter(x=>x.response==="D").length,nr=u.filter(x=>x.response==="NR").length,done=u.filter(x=>x.workStatus==="Completed").length;
-  const agree=a+c,openFollowups=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).length,donePct=total?Math.round(done/total*100):0;
-  document.getElementById("heroTotalUnits").textContent=total.toLocaleString();const tag=document.getElementById("heroTagUnits");if(tag)tag.textContent=`${total.toLocaleString()} Units`;const orbit=document.getElementById("heroOrbit");if(orbit)orbit.style.setProperty("--pct",`${donePct*3.6}deg`);const orbitText=document.getElementById("heroCompletionPct");if(orbitText)orbitText.textContent=`${donePct}%`;
-  document.getElementById("kpiOptIn").textContent=agree.toLocaleString();document.getElementById("kpiOptInPct").textContent=`${total?Math.round(agree/total*100):0}% · A + C`;
+  const u=unitsArray(),
+        total=u.length,
+        a=u.filter(x=>x.response==="A").length,
+        c=u.filter(x=>x.response==="C").length,
+        p=u.filter(x=>x.response==="P").length,
+        d=u.filter(x=>x.response==="D").length,
+        nr=u.filter(x=>x.response==="NR").length,
+        done=u.filter(x=>x.workStatus==="Completed").length;
+
+  const agree=a+c,
+        openFollowups=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).length,
+        donePct=total?Math.round(done/total*100):0,
+        today=isoTodaySG();
+
+  document.getElementById("heroTotalUnits").textContent=total.toLocaleString();
+  const tag=document.getElementById("heroTagUnits");if(tag)tag.textContent=total.toLocaleString();
+  const orbit=document.getElementById("heroOrbit");if(orbit)orbit.style.setProperty("--pct",`${donePct*3.6}deg`);
+  const orbitText=document.getElementById("heroCompletionPct");if(orbitText)orbitText.textContent=`${donePct}%`;
+
+  document.getElementById("kpiOptIn").textContent=agree.toLocaleString();
+  document.getElementById("kpiOptInPct").textContent=`${total?Math.round(agree/total*100):0}% of total units`;
   document.getElementById("kpiAppointments").textContent=c.toLocaleString();
   document.getElementById("kpiPending").textContent=p.toLocaleString();
-  document.getElementById("kpiCompleted").textContent=done.toLocaleString();document.getElementById("kpiCompletedPct").textContent=`${donePct}% project`;
-  document.getElementById("kpiNR").textContent=nr.toLocaleString();document.getElementById("kpiOptOut").textContent=d.toLocaleString();document.getElementById("kpiFollowups").textContent=openFollowups.toLocaleString();
-  document.getElementById("zoneProgress").innerHTML=Object.keys(ZONE_BLOCKS).map(z=>{const zu=u.filter(x=>x.zone===Number(z)),zc=zu.filter(x=>x.workStatus==="Completed").length,za=zu.filter(x=>x.response==="A"||x.response==="C").length,zp=zu.filter(x=>x.response==="P").length,pct=zu.length?Math.round(zc/zu.length*100):0;return`<div class="zone-line"><div><div><div class="zone-name">Zone ${z}</div><div class="zone-pct">${pct}% complete</div></div><div class="zone-mini">${zc}/${zu.length}<br>${za} opt-in · ${zp} pending</div></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`}).join("");
-  const upcoming=state.appointments.filter(x=>!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x)&&x.date>=isoTodaySG()).sort((a,b)=>a.date.localeCompare(b.date)||slotStartMinutes(a.slot)-slotStartMinutes(b.slot)||Number(a.block)-Number(b.block)).slice(0,6);
-  document.getElementById("upcomingAppointments").innerHTML=upcoming.length?upcoming.map(x=>`<div class="compact-item"><div><strong>Blk ${x.block} · ${esc(x.unitDisplay)}</strong><span>${esc(getUnit(x.unitKey)?.ownerName||"Owner not entered")} · ${esc(x.team||"Unassigned")}</span></div><small>C · ${safeDate(x.date)}<br>${esc(x.slot)}</small></div>`).join(""):`<div class="empty-state">No upcoming confirmations.</div>`;
-  const follow=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).sort((a,b)=>a.visitDate.localeCompare(b.visitDate)||String(a.visitTime||"").localeCompare(String(b.visitTime||""))).slice(0,6);
-  document.getElementById("followupAttention").innerHTML=follow.length?follow.map(s=>`<div class="attention-card"><strong>Blk ${s.block} · ${esc(s.unitDisplay)}</strong><span>${esc(s.ownerName||"Name not entered")} · ${esc(s.contact||"No contact")}</span><b>${safeDate(s.visitDate)}${s.visitTime?` · ${esc(s.visitTime)}`:""}</b></div>`).join(""):`<div class="empty-state">No upcoming survey visits.</div>`;
-  renderTodayTeamBoard();
+  document.getElementById("kpiCompleted").textContent=done.toLocaleString();
+  document.getElementById("kpiCompletedPct").textContent=`${donePct}% project`;
+  document.getElementById("kpiNR").textContent=nr.toLocaleString();
+  document.getElementById("kpiOptOut").textContent=d.toLocaleString();
+  document.getElementById("kpiFollowups").textContent=openFollowups.toLocaleString();
+
+  document.getElementById("zoneProgress").innerHTML=Object.keys(ZONE_BLOCKS).map(z=>{
+    const zu=u.filter(x=>x.zone===Number(z)),
+          zc=zu.filter(x=>x.workStatus==="Completed").length,
+          pct=zu.length?Math.round(zc/zu.length*100):0;
+    return `<div class="app-zone-row">
+      <div class="app-zone-label"><strong>Zone ${z}</strong><span>${pct}%</span></div>
+      <div class="app-zone-bar"><i style="width:${pct}%"></i></div>
+      <small>${zc} / ${zu.length}</small>
+    </div>`
+  }).join("");
+
+  const todayRows=state.appointments
+    .filter(x=>liveScheduleRecord(x)&&x.date===today)
+    .sort((x,y)=>String(x.team||"").localeCompare(String(y.team||""))||slotStartMinutes(x.slot)-slotStartMinutes(y.slot)||Number(x.block)-Number(y.block));
+
+  const latest=new Map();
+  todayRows.forEach(x=>{
+    const old=latest.get(x.unitKey);
+    if(!old||Number(x.id||0)>Number(old.id||0))latest.set(x.unitKey,x)
+  });
+
+  const rows=[...latest.values()];
+  const todayBox=document.getElementById("dashboardTodayAppointments");
+  todayBox.innerHTML=rows.length?rows.slice(0,8).map(x=>{
+    const u=getUnit(x.unitKey),status=currentUnitAppointmentState(x.unitKey).status;
+    const cls=status==="C"?"confirmed":status==="P"?"pending":status==="D"?"optout":"neutral";
+    return `<div class="app-appt-row">
+      <span class="app-appt-time">${esc(x.slot||"—")}</span>
+      <span class="app-appt-zone">Z${x.zone||zoneOfBlock(x.block)}</span>
+      <span class="app-appt-unit"><strong>Blk ${x.block} · ${esc(x.unitDisplay||"")}</strong><small>${esc(u?.ownerName||x.ownerName||"Name not entered")} · ${esc(x.team||"Unassigned")}</small></span>
+      <span class="app-appt-status ${cls}">${statusLabel(status)}</span>
+    </div>`
+  }).join(""):`<div class="empty-state">No appointments scheduled for today.</div>`;
+
+  const activity=[];
+  state.appointments.slice().sort((x,y)=>Number(y.id||0)-Number(x.id||0)).slice(0,4).forEach(x=>{
+    activity.push({type:"appointment",text:`Blk ${x.block} ${x.unitDisplay||""} · ${x.scheduleState==="Cancelled"?"Appointment cancelled":x.workStatus==="Completed"?"Work completed":"Appointment updated"}`})
+  });
+  state.complaints.slice().sort((x,y)=>Number(y.id||0)-Number(x.id||0)).slice(0,2).forEach(x=>{
+    activity.push({type:"complaint",text:`Blk ${x.block} ${x.unitDisplay||""} · Complaint record`})
+  });
+  document.getElementById("dashboardRecentActivity").innerHTML=activity.length?activity.slice(0,5).map((x,i)=>`
+    <div class="app-activity-row"><i class="${x.type}"></i><span>${esc(x.text)}</span><small>${i===0?"Latest":"Recent"}</small></div>
+  `).join(""):`<div class="empty-state">No recent activity yet.</div>`;
+
+  renderDashboardPhotoWork().catch(err=>console.error("Dashboard photo summary",err));
 }
+async function renderDashboardPhotoWork(){
+  const today=isoTodaySG();
+  const photos=(await photoDbAll("photos")).filter(p=>p.date===today);
+  const units=new Map();
+  photos.forEach(p=>{
+    const arr=units.get(p.unitKey)||[];
+    arr.push(p);
+    units.set(p.unitKey,arr)
+  });
+
+  let scheduled=[];
+  try{scheduled=(await photoDbAll("schedule")).filter(r=>r.date===today)}catch{}
+  const allKeys=new Set([...scheduled.map(r=>r.unitKey),...units.keys()]);
+  const totalUnits=allKeys.size;
+  const ready=[...allKeys].filter(k=>(units.get(k)||[]).length>=3).length;
+  const pct=totalUnits?Math.round(ready/totalUnits*100):0;
+
+  const ring=document.getElementById("dashboardPhotoRing");
+  if(ring)ring.style.setProperty("--photo-pct",`${pct*3.6}deg`);
+  const pctEl=document.getElementById("dashboardPhotoPct");if(pctEl)pctEl.textContent=`${pct}%`;
+  const unitEl=document.getElementById("dashboardPhotoUnits");if(unitEl)unitEl.textContent=totalUnits.toLocaleString();
+  const readyEl=document.getElementById("dashboardPhotoReady");if(readyEl)readyEl.textContent=ready.toLocaleString();
+  const countEl=document.getElementById("dashboardPhotoCount");if(countEl)countEl.textContent=photos.length.toLocaleString();
+
+  const recent=[...units.entries()]
+    .map(([key,arr])=>({key,arr:arr.sort((a,b)=>Number(a.order||0)-Number(b.order||0))}))
+    .sort((a,b)=>b.arr.length-a.arr.length)
+    .slice(0,3);
+
+  const box=document.getElementById("dashboardPhotoRecent");
+  if(!box)return;
+  box.innerHTML=recent.length?recent.map(({key,arr})=>{
+    const p=arr[0],u=getUnit(key);
+    return `<div class="app-photo-mini"><span>📷</span><div><strong>Blk ${p.block||u?.block||"—"} ${p.unitDisplay||(u?unitDisplay(u.floor,u.unit):"")}</strong><small>${arr.length} photo${arr.length===1?"":"s"} · ${arr.length>=3?"Ready":"Pending"}</small></div></div>`
+  }).join(""):`<div class="app-photo-empty">No photos stored for today.</div>`
+}
+
 function renderBlockBoard(){
   const block=Number(document.getElementById("boardBlock").value),floorFilter=document.getElementById("boardFloor").value,q=document.getElementById("boardSearch").value.trim().toLowerCase(),raw=getBlockUnits(block);
   const u=raw.map(x=>{const live=currentUnitAppointmentState(x.key),a=live.appointment;return{...x,response:live.status,workStatus:live.workStatus,appointmentDate:a?.date||"",appointmentSlot:a?.slot||"",team:a?.team||""}});
