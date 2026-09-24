@@ -1,0 +1,35 @@
+# ELU APP — PRIVATE REHEARSAL V1
+
+This package is a separate installable PWA rehearsal based on ELU V7.53.
+
+IMPORTANT SAFETY DESIGN
+- Do NOT upload this package over the existing `elu-upgrading-app` production repository.
+- Create a NEW GitHub repository, recommended name: `elu-app-rehearsal`.
+- The rehearsal uses separate encrypted browser storage:
+  - localStorage key: `elu_rehearsal_secure_state_v1`
+  - IndexedDB: `ELU_Photo_Inbox_Rehearsal_V1`
+- Therefore the rehearsal app will not overwrite the live ELU browser app's saved state or photo database.
+- The production app files themselves are unchanged.
+- The same ELU login encryption seed is retained, but runtime rehearsal data is separate.
+
+WHAT THIS V1 DOES
+- Installs to phone / desktop home screen as `ELU Upgrading`.
+- Opens in standalone app mode without normal browser chrome.
+- Has a custom ELU icon.
+- Keeps the V7.53 workflow and screens.
+- Adds offline static-file caching for rehearsal use.
+- Shows `ELU APP · REHEARSAL` so it cannot be confused with the production site.
+
+WHAT THIS V1 DOES NOT DO
+- No Play Store publishing.
+- No cloud sync.
+- No automatic SMS / WhatsApp sending.
+- No production data migration.
+- No changes to the production repository.
+
+DEPLOYMENT
+1. Create a new GitHub repo: `elu-app-rehearsal`.
+2. Upload ALL files from this ZIP to that new repo.
+3. Enable GitHub Pages for the new repo.
+4. Open the new rehearsal URL on the phone.
+5. Use the `Install ELU App` button if Chrome offers it; otherwise use browser menu → Add to Home screen / Install app.

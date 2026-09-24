@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b5ea8">
+  <title>ELU Upgrading — Rehearsal App</title>
+  <link rel="stylesheet" href="styles.css?v=rehearsal1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ELU Upgrading">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body class="secure-locked">
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v10h-6zM4 14h6v6H4zM14 18h6v2h-6z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5l8-3 8 3v16M8 8h2m4 0h2M8 12h2m4 0h2M8 16h2m4 0h2M2 21h20"/></symbol>
+    <symbol id="i-survey" viewBox="0 0 24 24"><path d="M7 3h10v4H7zM5 5H4v16h16V5h-1M8 12l2 2 5-5M8 18h8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2ZM7 2v4m10-4v4M3 9h18M7 13h3v3H7z"/></symbol>
+    <symbol id="i-register" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5M8 19h4"/></symbol>
+    <symbol id="i-complaint" viewBox="0 0 24 24"><path d="M4 4h16v13H9l-5 4zM8 8h8M8 12h6"/></symbol>
+    <symbol id="i-team" viewBox="0 0 24 24"><path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8-1a3 3 0 1 0 0-6M2 21v-3a6 6 0 0 1 12 0v3m2 0v-2a5 5 0 0 0-2-4m4-1a5 5 0 0 1 4 5v2"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 16v2m4-6v6m4-10v10"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </svg>
+
+
+  <div class="security-gate" id="securityGate">
+    <div class="security-card">
+      <div class="security-lock-mark">ELU</div>
+      <div class="security-kicker">SECURE ACCESS</div>
+      <h1>ELU Upgrading</h1>
+      <p>Enter your username and password to unlock resident and appointment data.</p>
+      <form id="securityLoginForm" class="security-form">
+        <label>Username
+          <input type="text" id="securityUsername" autocomplete="username" spellcheck="false" required>
+        </label>
+        <label>Password
+          <input type="password" id="securityPassword" autocomplete="current-password" spellcheck="false" required>
+        </label>
+        <button class="primary-btn security-unlock-btn" id="securityUnlockBtn" type="submit">Login</button>
+      </form>
+      <div class="security-message" id="securityMessage" aria-live="polite"></div>
+      <div class="security-note">Password is not stored. Data is decrypted only after a successful unlock. The app locks again after 15 minutes of inactivity.</div>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">ELU</div>
+        <div>
+          <div class="brand-name">Upgrading</div>
+          <div class="brand-sub">Command Centre</div>
+        </div>
+      </div>
+
+      <div class="project-badge">
+        <span class="project-dot"></span>
+        <div><strong>PR3 Project</strong><small>6 zones · live workspace</small></div>
+      </div>
+
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-view="dashboard"><svg><use href="#i-dashboard"/></svg><span>Dashboard</span></button>
+        <button class="nav-item" data-view="blockboard"><svg><use href="#i-building"/></svg><span>Block Board</span></button>
+        <button class="nav-item" data-view="survey"><svg><use href="#i-survey"/></svg><span>Survey Visits</span></button>
+        <button class="nav-item" data-view="appointments"><svg><use href="#i-calendar"/></svg><span>Appointment Schedule</span></button>
+        <button class="nav-item" data-view="units"><svg><use href="#i-register"/></svg><span>Unit Register</span></button>
+        <button class="nav-item" data-view="complaints"><svg><use href="#i-complaint"/></svg><span>Complaint Register</span></button>
+        <button class="nav-item" data-view="teams"><svg><use href="#i-team"/></svg><span>Appointment Planner</span></button>
+        <button class="nav-item" data-view="photos"><svg><use href="#i-register"/></svg><span>Photo Report</span></button>
+        <button class="nav-item" data-view="reports"><svg><use href="#i-report"/></svg><span>Meeting Report</span></button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>Field-first workflow</strong>
+        <span>Survey Visit → Appointment → Unit</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">ELU UPGRADING · PASIR RIS</div>
+          <h1 id="pageTitle">Executive Dashboard</h1>
+          <p id="pageSubtitle">One view of resident response, appointments and completed work.</p>
+        </div>
+        <div class="top-actions">
+          <div class="user-name-chip" id="userNameChip">Secure User</div>
+          <div class="today-chip" id="todayChip"></div>
+          <button class="ghost-btn" id="exportBackupBtn">Backup Data</button><button class="ghost-btn secure-logout-btn" id="securityLogoutBtn">Lock</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="command-hero">
+          <div class="command-copy">
+            <div class="command-kicker"><span class="live-dot"></span> ELU UPGRADING · PR3 COMMAND CENTRE</div>
+            <p>Survey, appointment, unit status and weekly progress — connected to one master register across all 6 zones.</p>
+            <div class="hero-tags"><span>6 Zones</span><span>38 Blocks</span><span id="heroTagUnits">2,341 Units</span><span class="sync-tag">Excel schedule synced</span></div>
+          </div>
+          <div class="hero-orbit-wrap">
+            <div class="hero-orbit" id="heroOrbit">
+              <div class="hero-orbit-inner"><strong id="heroCompletionPct">0%</strong><span>Completed</span></div>
+            </div>
+            <div class="hero-orbit-caption"><strong id="heroTotalUnits">0</strong><span>Total project units</span></div>
+          </div>
+        </div>
+
+        <div class="kpi-grid premium-kpis">
+          <article class="kpi-card accent-green"><div class="kpi-icon green"><svg><use href="#i-check"/></svg></div><div><span>Opt-In Agree</span><strong id="kpiOptIn">0</strong><small id="kpiOptInPct">A + C</small></div></article>
+          <article class="kpi-card accent-pink"><div class="kpi-icon pink"><svg><use href="#i-calendar"/></svg></div><div><span>Confirmation · C</span><strong id="kpiAppointments">0</strong><small>Active confirmed appointments</small></div></article>
+          <article class="kpi-card accent-blue"><div class="kpi-icon blue">◷</div><div><span>Pending Confirmation · P</span><strong id="kpiPending">0</strong><small>Resident responded · date waiting</small></div></article>
+          <article class="kpi-card accent-cyan"><div class="kpi-icon cyan"><svg><use href="#i-building"/></svg></div><div><span>Work Completed</span><strong id="kpiCompleted">0</strong><small id="kpiCompletedPct">0%</small></div></article>
+          <article class="kpi-card accent-amber"><div class="kpi-icon amber">NR</div><div><span>No Response</span><strong id="kpiNR">0</strong><small>Requires follow-up</small></div></article>
+          <article class="kpi-card accent-rose"><div class="kpi-icon rose">D</div><div><span>Opt-Out</span><strong id="kpiOptOut">0</strong><small>Resident declined</small></div></article>
+          <article class="kpi-card accent-violet"><div class="kpi-icon violet"><svg><use href="#i-survey"/></svg></div><div><span>Survey Visits</span><strong id="kpiFollowups">0</strong><small>Upcoming visit appointments</small></div></article>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-wow">
+          <article class="panel zone-panel">
+            <div class="panel-head"><div><span class="section-label">ZONE PERFORMANCE</span><h3>Project pulse by zone</h3><p>Completion is calculated from the master unit data.</p></div><span class="panel-badge">LIVE</span></div>
+            <div id="zoneProgress" class="zone-progress zone-card-grid"></div>
+          </article>
+
+          <article class="panel appointment-panel">
+            <div class="panel-head"><div><span class="section-label">NEXT ACTIONS</span><h3>Upcoming confirmations</h3><p>Existing Excel schedules are already loaded.</p></div><button class="text-btn" data-go="appointments">View schedule</button></div>
+            <div id="upcomingAppointments" class="compact-list premium-compact-list"></div>
+          </article>
+        </div>
+
+        <article class="panel today-team-panel">
+          <div class="panel-head"><div><span class="section-label">TODAY · TEAM SCHEDULE</span><h3>Today's appointment deployment</h3><p>Each Zone is separated first, with Team 1 and Team 2 shown inside that Zone.</p></div><button class="text-btn" data-go="teams">Open Planner</button></div>
+          <div id="todayTeamBoard" class="today-team-board"></div>
+        </article>
+
+        <article class="panel attention-panel">
+          <div class="panel-head"><div><span class="section-label">FIELD VISITS</span><h3>Upcoming survey visits</h3></div><button class="text-btn" data-go="survey">Open Survey</button></div>
+          <div id="followupAttention" class="attention-grid"></div>
+        </article>
+      </section>
+
+      <section class="view" id="blockboard">
+        <div class="section-toolbar">
+          <div class="filter-group">
+            <label>Zone<select id="boardZone"></select></label>
+            <label>Block<select id="boardBlock"></select></label>
+            <label>Floor<select id="boardFloor"><option value="all">All floors</option></select></label>
+          </div>
+          <div class="toolbar-actions">
+            <div class="search-box"><svg><use href="#i-search"/></svg><input id="boardSearch" placeholder="Search unit e.g. 13-132"></div>
+            <button class="ghost-btn" id="downloadBlockBoardBtn">Block Board · A4 One Page</button>
+          </div>
+        </div>
+
+        <div id="blockHeadline" class="block-headline"></div>
+
+        <div class="legend">
+          <span><i class="dot optin"></i>A · Opt-In</span>
+          <span><i class="dot confirm"></i>C · Confirmation</span>
+          <span><i class="dot pending-confirm"></i>◷ P · Pending Confirmation</span>
+          <span><i class="dot optout"></i>D · Opt-Out</span>
+          <span><i class="dot nr"></i>NR · No Response</span>
+        </div>
+
+        <div id="floorBoard" class="floor-board"></div>
+      </section>
+
+      <section class="view" id="survey">
+        <div class="form-layout">
+          <article class="panel form-card">
+            <div class="panel-head"><div><span class="section-label">VISIT DIARY</span><h3>Survey Visit Register</h3><p>Reference for when you need to visit a resident. No A / C / D / NR status is set here.</p></div></div>
+            <form id="surveyForm" class="premium-form">
+              <input type="hidden" id="surveyEditId">
+              <div class="form-row three">
+                <label>Zone<select id="surveyZone"></select></label>
+                <label>Block<select id="surveyBlock"></select></label>
+                <label>Unit<select id="surveyUnit"></select></label>
+              </div>
+              <div class="form-row two">
+                <label>Owner Name · Optional<input id="surveyOwner" autocomplete="off" placeholder="Leave blank if not known"></label>
+                <label>Contact<input id="surveyContact" inputmode="tel" autocomplete="off" placeholder="Contact number"></label>
+              </div>
+              <div class="form-row two">
+                <label>Survey Visit Date<input type="date" id="surveyVisitDate"></label>
+                <label>Visit Time<input type="time" id="surveyVisitTime"></label>
+              </div>
+              <label>Visit Note<textarea id="surveyRemarks" rows="4" placeholder="Call note, access note, resident request..."></textarea></label>
+              <div class="form-actions">
+                <button class="primary-btn" id="surveySaveBtn" type="submit">Save Survey Visit</button>
+                <button class="ghost-btn hidden" id="surveyCancelEdit" type="button">Cancel Edit</button>
+              </div>
+              <div class="form-hint">Survey is a visit diary only. Visit date, time and note stay here. Contact is used only as a backup when the Unit Register has no contact. Appointment Register remains the main source.</div>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head"><div><span class="section-label">RECENT ACTIVITY</span><h3>Survey Register</h3></div></div>
+            <div id="surveyTable" class="table-shell"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="appointments">
+        <div class="form-layout">
+          <article class="panel form-card">
+            <div class="panel-head"><div><span class="section-label">APPOINTMENT ENTRY</span><h3>Direct Appointment / Resident Details</h3><p>Direct visit? Enter Date + Slot + Team here. The same record appears in Planner, Appointment Register and Unit Register.</p></div></div>
+            <form id="appointmentForm" class="premium-form">
+              <input type="hidden" id="appointmentEditId">
+              <div class="form-row three">
+                <label>Zone<select id="appointmentZone"></select></label>
+                <label>Block<select id="appointmentBlock"></select></label>
+                <label>Unit<select id="appointmentUnit"></select></label>
+              </div>
+
+              <div class="form-row three">
+                <label>Appointment Date<input type="date" id="appointmentDate"></label>
+                <label>Time Slot
+                  <select id="appointmentSlot">
+                    <option>9am–11am</option>
+                    <option>11am–1pm</option>
+                    <option>2pm–4pm</option>
+                    <option>4pm–6pm</option>
+                    <option value="CUSTOM">Custom Time</option>
+                  </select>
+                </label>
+                <label>Team
+                  <select id="appointmentTeam">
+                    <option>Team 1</option>
+                    <option>Team 2</option>
+                    <option value="">Unassigned</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="planner-custom-time hidden" id="appointmentCustomTimeRow">
+                <label>Custom Start<input type="time" id="appointmentCustomStart"></label>
+                <label>Custom End<input type="time" id="appointmentCustomEnd"></label>
+              </div>
+
+              <div class="planned-schedule-card" id="appointmentPlanCard">
+                <div><span>Current Booking</span><strong id="appointmentPlanDate">—</strong></div>
+                <div><span>Current Slot</span><strong id="appointmentPlanSlot">—</strong></div>
+                <div><span>Current Team</span><strong id="appointmentPlanTeam">—</strong></div>
+              </div>
+
+              <div class="form-row two">
+                <label>Owner Name<input id="appointmentOwner" placeholder="Owner / resident name"></label>
+                <label>Contact<input id="appointmentContact" inputmode="tel" placeholder="Contact number"></label>
+              </div>
+
+              <label>Appointment Note<textarea id="appointmentRemarks" rows="3" placeholder="Resident / access note"></textarea></label>
+              <div class="inline-sync-note" id="appointmentSyncNote">One booking record only. Direct entry here automatically appears in Planner; Planner updates appear here too.</div>
+              <div class="form-actions">
+                <button class="primary-btn" id="appointmentSaveBtn" type="submit">Save Appointment</button>
+                <button class="optout-btn" id="appointmentOptOutBtn" type="button">Opt-Out · D</button>
+                <button class="ghost-btn hidden" id="appointmentCancelEdit" type="button">Cancel Edit</button>
+              </div>
+              <div class="form-hint">Two routes, one record: Survey follow-up can open this form, or you can create a direct appointment here. Existing bookings are rescheduled instead of duplicated.</div>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head register-head"><div><span class="section-label">UNIT APPOINTMENT STATUS</span><h3>Appointment Register</h3><p><span id="appointmentUnitCount">0</span> units shown. NR = no response · P = waiting · C = confirmed · A = completed · D = opt-out.</p></div><div class="register-tools"><div class="search-box small"><svg><use href="#i-search"/></svg><input id="appointmentUnitSearch" placeholder="Search unit e.g. 01-302"></div><label class="mini-filter">Zone<select id="appointmentZoneFilter"></select></label><label class="mini-filter">Block<select id="appointmentBlockFilter"></select></label></div></div>
+            <div id="appointmentTable" class="table-shell"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="units">
+        <article class="panel">
+          <div class="panel-head register-head">
+            <div><span class="section-label">MASTER DATA · READ ONLY</span><h3>Unit Register</h3><p>Appointment Register is the main source. Survey contributes contact only when the master contact is blank.</p></div>
+            <div class="register-tools">
+              <div class="search-box small"><svg><use href="#i-search"/></svg><input id="unitSearch" placeholder="Search block / unit / owner / contact"></div>
+              <select id="unitZoneFilter"></select>
+              <select id="unitBlockFilter"></select>
+            </div>
+          </div>
+          <div id="unitTable" class="table-shell"></div>
+        </article>
+      </section>
+
+      <section class="view" id="complaints">
+        <div class="form-layout">
+          <article class="panel form-card">
+            <div class="panel-head"><div><span class="section-label">SEPARATE RECORD</span><h3>New Complaint</h3><p>Select the unit; owner and contact are looked up. No complaint is created automatically.</p></div></div>
+            <form id="complaintForm" class="premium-form">
+              <input type="hidden" id="complaintEditId">
+              <div class="form-row three">
+                <label>Zone<select id="complaintZone"></select></label>
+                <label>Block<select id="complaintBlock"></select></label>
+                <label>Unit<select id="complaintUnit"></select></label>
+              </div>
+              <div class="form-row two">
+                <label>Owner Name<input id="complaintOwner" readonly></label>
+                <label>Contact<input id="complaintContact" readonly></label>
+              </div>
+              <div class="form-row two">
+                <label>Date<input type="date" id="complaintDate" required></label>
+                <label>Status<select id="complaintStatus"><option>Open</option><option>In Progress</option><option>Closed</option></select></label>
+              </div>
+              <label>Complaint<textarea id="complaintText" rows="4" required></textarea></label>
+              <label>Remarks<textarea id="complaintRemarks" rows="3"></textarea></label>
+              <div class="form-actions">
+                <button class="primary-btn" id="complaintSaveBtn" type="submit">Save Complaint</button>
+                <button class="ghost-btn hidden" id="complaintCancelEdit" type="button">Cancel Edit</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head register-head"><div><span class="section-label">COMPLAINT REGISTER</span><h3>Resident Complaints</h3></div><div class="register-tools"><label class="mini-filter">Zone<select id="complaintZoneFilter"></select></label><label class="mini-filter">Block<select id="complaintBlockFilter"></select></label></div></div>
+            <div id="complaintTable" class="table-shell"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="teams">
+        <div class="planner-hero simple-planner-hero">
+          <div>
+            <span class="section-label">APPOINTMENT PLANNER</span>
+            <h2>Today’s appointment working sheet</h2>
+            <p>Display only. Appointments come directly from Appointment Schedule. To add, edit, reschedule or cancel, open the appointment record.</p>
+          </div>
+          <div class="simple-planner-controls">
+            <label>Zone<select id="plannerViewZone"></select></label>
+            <label>Date<input type="date" id="teamDate"></label>
+            <button class="ghost-btn" id="plannerToday" type="button">Today</button>
+            <button class="ghost-btn" id="plannerTomorrow" type="button">Tomorrow</button>
+            <button class="ghost-btn" id="plannerNext7" type="button">Next 7 Days</button>
+          </div>
+        </div>
+
+        <article class="panel simple-planner-panel">
+          <div class="planner-sheet-title">
+            <div>
+              <span class="section-label">LIVE FROM APPOINTMENT SCHEDULE</span>
+              <h3 id="plannerDateTitle">Today appointments</h3>
+            </div>
+            <div class="planner-sheet-actions"><span class="panel-badge" id="plannerCountBadge">0 appointments</span></div>
+          </div>
+          <div id="plannerTable" class="table-shell simple-planner-table"></div>
+        </article>
+
+        <div class="hidden" aria-hidden="true">
+          <select id="plannerViewBlock"></select>
+          <button id="plannerPrevDay" type="button"></button>
+          <button id="plannerNextDay" type="button"></button>
+
+          <form id="plannerForm">
+            <input type="hidden" id="plannerEditId">
+            <select id="plannerZone"></select>
+            <select id="plannerBlock"></select>
+            <select id="plannerUnit"></select>
+            <select id="plannerTeam"><option>Team 1</option><option>Team 2</option></select>
+            <select id="plannerSlot"><option>9am–11am</option><option>11am–1pm</option><option>2pm–4pm</option><option>4pm–6pm</option><option value="CUSTOM">Custom Time</option></select>
+            <div id="plannerCustomTimeRow"><input type="time" id="plannerCustomStart"><input type="time" id="plannerCustomEnd"></div>
+            <input id="plannerRemarks">
+            <button id="plannerSaveBtn" type="submit"></button>
+            <button id="plannerCancelEdit" type="button"></button>
+          </form>
+          <div id="plannerSpecialTimes"></div>
+          <div id="plannerUnassigned"></div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="schedulemaster" aria-hidden="true">
+        <div class="planner-hero master-schedule-hero">
+          <div>
+            <span class="section-label">22 → 21 CYCLE · QUICK ENTRY</span>
+            <h2>Master Appointment Schedule</h2>
+            <p>Enter appointments continuously in one place. Daily Appointment Planner will automatically show the same records by date.</p>
+          </div>
+          <div class="master-cycle-controls">
+            <label>Cycle Reference Date<input type="date" id="masterCycleDate"></label>
+            <label>View Zone<select id="masterZoneFilter"></select></label>
+          </div>
+        </div>
+
+        <article class="panel master-entry-panel">
+          <div class="panel-head"><div><span class="section-label">FAST ENTRY</span><h3>Add appointment row</h3><p>Date / Zone / Team stay in place after saving so you can enter the next unit quickly.</p></div></div>
+          <form id="masterScheduleForm" class="master-schedule-form">
+            <label>Date<input type="date" id="masterDate"></label>
+            <label>Zone<select id="masterZone"></select></label>
+            <label>Block<select id="masterBlock"></select></label>
+            <label>Unit<select id="masterUnit"></select></label>
+            <label>Team<select id="masterTeam"><option>Team 1</option><option>Team 2</option></select></label>
+            <label>Slot<select id="masterSlot"><option>9am–11am</option><option>11am–1pm</option><option>2pm–4pm</option><option>4pm–6pm</option><option value="CUSTOM">Custom Time</option></select></label>
+            <div class="master-custom-time hidden" id="masterCustomRow">
+              <label>Start<input type="time" id="masterCustomStart"></label>
+              <label>End<input type="time" id="masterCustomEnd"></label>
+            </div>
+            <label class="master-note">Remarks<input id="masterRemarks" placeholder="Resident / access note"></label>
+            <button class="primary-btn" type="submit">Add Appointment</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head register-head">
+            <div><span class="section-label">MONTHLY WORKING SHEET</span><h3 id="masterCycleTitle">22 → 21 Schedule</h3><p>Zone-wise appointment schedule. This stays with Planner, Dashboard and the project records. Photo Report now has its own separate Daily Photo Schedule.</p></div>
+          </div>
+          <div id="masterScheduleTable" class="table-shell"></div>
+        </article>
+      </section>
+
+      <section class="view" id="photos">
+        <div class="planner-hero photo-report-hero">
+          <div>
+            <span class="section-label">PHOTO INBOX · 22 → 21 CYCLE</span>
+            <h2>Zone-wise Photo Report</h2>
+            <p>Choose one Zone + Date. Enter that day's units, then attach photos unit-by-unit. Photo work stays separate from all project appointment records.</p>
+          </div>
+          <div class="photo-cycle-controls">
+            <label>Zone<select id="photoZone"></select></label>
+            <label>Date<input type="date" id="photoDate"></label>
+            <label>Target Unit<select id="photoTargetUnit"></select></label>
+          </div>
+        </div>
+
+        <div id="photoZoneTabs" class="photo-zone-tabs" aria-label="Photo zones">
+          <button type="button" data-photo-zone-tab="1">Zone 1</button>
+          <button type="button" data-photo-zone-tab="2">Zone 2</button>
+          <button type="button" data-photo-zone-tab="3">Zone 3</button>
+          <button type="button" data-photo-zone-tab="4">Zone 4</button>
+          <button type="button" data-photo-zone-tab="5">Zone 5</button>
+          <button type="button" data-photo-zone-tab="6">Zone 6</button>
+        </div>
+
+        <div class="photo-day-workbench">
+          <article class="panel photo-schedule-panel">
+            <div class="panel-head register-head">
+              <div>
+                <span class="section-label">PHOTO DAILY REGISTER</span>
+                <h3 id="photoScheduleContextTitle">Daily Photo Schedule</h3>
+                <p>Only the selected Zone + Date is shown here. Change Zone / Date above to prepare another day. This register stays separate from all project records.</p>
+              </div>
+              <span id="photoScheduleCount" class="panel-badge">0 units</span>
+            </div>
+
+            <form id="photoScheduleForm" class="photo-schedule-form photo-schedule-form-compact">
+              <label>Block<select id="photoScheduleBlock"></select></label>
+              <label>Unit<select id="photoScheduleUnit"></select></label>
+              <label>Team<select id="photoScheduleTeam"><option>Team 1</option><option>Team 2</option></select></label>
+              <label>Time<input id="photoScheduleTime" placeholder="e.g. 9am–11am"></label>
+              <button class="primary-btn" type="submit">Add Unit</button>
+            </form>
+
+            <div class="photo-rule-note">Type one day at a time. For a week, change the Date above and enter that day's units. Remove deletes only this daily schedule line — not photos.</div>
+            <div id="photoScheduleTable" class="table-shell photo-schedule-table photo-schedule-table-compact"></div>
+          </article>
+
+          <article class="panel photo-import-panel photo-import-side">
+            <div class="panel-head">
+              <div>
+                <span class="section-label">DAILY PHOTO DROP</span>
+                <h3>Upload WhatsApp ZIP</h3>
+                <p>Select the Target Unit above, then attach its ZIP. The unit list comes only from this Zone + Date Photo Daily Register.</p>
+              </div>
+            </div>
+            <div class="photo-import-row photo-import-row-compact">
+              <input type="file" id="photoZipInput" accept=".zip,application/zip">
+              <button class="primary-btn" id="photoImportBtn" type="button">Import ZIP</button>
+              <span id="photoImportStatus" class="photo-import-status">No ZIP selected.</span>
+            </div>
+            <div class="photo-rule-note">Photos remain in the separate photo store. The first 3 ordered photos are used in the report; extras stay available until you delete them.</div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head register-head">
+            <div><span class="section-label">DAILY CHECK</span><h3 id="photoDailyTitle">Daily photo units & photos</h3><p>Green = at least 3 photos ready. Units with stored photos remain visible even if their Daily Photo Schedule row was removed.</p></div>
+          </div>
+          <div id="photoDailyBoard" class="photo-daily-board"></div>
+        </article>
+
+        <article class="panel photo-monthly-panel">
+          <div class="panel-head register-head">
+            <div><span class="section-label">MONTHLY OUTPUT</span><h3 id="photoCycleTitle">22 → 21 Photo Report</h3><p>Generate Zone-wise Word or Print/PDF from stored photos. Report order is date → team → time → block/unit.</p></div>
+            <div class="register-tools">
+              <label class="mini-filter">Cycle Reference Date<input type="date" id="photoCycleDate"></label>
+              <button class="primary-btn" id="photoWordBtn" type="button">Generate Word</button>
+              <button class="ghost-btn" id="photoPdfBtn" type="button">Print / PDF</button>
+            </div>
+          </div>
+          <div class="photo-retention-note" id="photoRetentionNote"></div>
+          <div id="photoMonthlySummary" class="photo-monthly-summary"></div>
+        </article>
+      </section>
+
+      <section class="view" id="reports">
+        <div class="report-hero">
+          <div><span class="section-label">WEEKLY PROGRESS MEETING</span><h2>Progress Summary</h2><p>Calculated from the read-only Unit Register. A + C = Opt-In Agree; completed work is counted separately.</p></div>
+          <div class="report-actions report-download-actions">
+            <div class="report-primary-downloads">
+              <button class="primary-btn" id="exportManagerPdfBtn">Manager PDF</button>
+              <button class="primary-btn secondary" id="exportManagerPptBtn">Manager PPT</button>
+              <button class="ghost-btn" id="exportUnitSummaryPdfBtn">Unit Summary PDF</button>
+              <button class="ghost-btn" id="exportBlockChartPdfBtn">Block Chart PDF</button>
+            </div>
+            <div class="report-data-downloads" aria-label="Data exports">
+              <span class="report-data-label">DATA EXPORT</span>
+              <button class="ghost-btn" id="exportProgressBtn">Progress CSV</button>
+              <button class="ghost-btn" id="exportUnitsBtn">Unit Summary CSV</button>
+            </div>
+          </div>
+        </div>
+        <article class="panel">
+          <div class="panel-head register-head">
+            <div><h3>Weekly Progress Summary</h3><p>Aligned to the Progress Summary structure from your source workbooks.</p></div>
+            <div class="register-tools">
+              <label class="mini-filter">Zone<select id="reportZoneFilter"></select></label>
+              <label class="mini-filter">Block<select id="reportBlockFilter"></select></label>
+            </div>
+          </div>
+          <div class="manager-export-note"><strong>Manager Report</strong><span>PDF / PPT includes a colour-coded block percentage chart, zone progress and weekly meeting table. Unit Summary exports exclude Owner Name, Contact and free-text Remarks.</span></div>
+          <div id="reportSummaryCards" class="report-summary-cards"></div>
+          <div class="report-chart-panel">
+            <div class="report-chart-head"><div><span class="section-label">BLOCK VIEW</span><h3>Block Status % Comparison</h3><p>Side-by-side percentage columns for Opt-In, Completed, Pending Confirmation, Opt-Out and NR.</p></div><span class="panel-badge">NO PERSONAL DATA</span></div>
+            <div class="report-chart-legend">
+              <span><i class="legend-agree"></i>Opt-In A+C</span>
+              <span><i class="legend-done"></i>Completed</span>
+              <span><i class="legend-p"></i>Pending P</span>
+              <span><i class="legend-d"></i>Opt-Out D</span>
+              <span><i class="legend-nr"></i>NR</span>
+            </div>
+            <div id="reportBlockChart" class="report-block-chart"></div>
+          </div>
+          <div id="reportTable" class="table-shell"></div>
+        </article>
+
+        <article class="panel response-summary-panel">
+          <div class="panel-head register-head response-summary-toolbar">
+            <div>
+              <span class="section-label">SEPARATE LIVE SUMMARY</span>
+              <h3>Opt-In / Opt-Out / NR Summary</h3>
+              <p>Live block-wise summary from the current Unit Register. Pending Confirmation (P) is counted inside Respond Unit and shown separately for accountability.</p>
+            </div>
+            <div class="register-tools">
+              <label class="mini-filter">Zone<select id="responseSummaryZoneFilter"></select></label>
+              <button class="ghost-btn" id="responseSummaryPrintBtn" type="button">Print / PDF</button>
+              <button class="ghost-btn" id="responseSummaryCsvBtn" type="button">Summary CSV</button>
+            </div>
+          </div>
+
+          <div class="response-summary-sheet" id="responseSummarySheet">
+            <div class="response-summary-title">(Summary of Opt In, Opt Out &amp; NR Unit Details)</div>
+            <div id="responseSummaryTable" class="response-summary-table-wrap"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="unit-drawer" id="unitDrawer">
+    <div class="drawer-head">
+      <div><span class="section-label">UNIT DETAILS</span><h2 id="drawerUnitTitle">Unit</h2><p id="drawerUnitMeta"></p></div>
+      <button class="icon-btn" id="drawerClose"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <div class="master-readonly">
+      <div class="master-lock">Master data · read only</div>
+      <input type="hidden" id="drawerUnitKey">
+      <div class="readonly-grid">
+        <div><span>Status</span><strong id="drawerStatusText">—</strong></div>
+        <div><span>Owner Name</span><strong id="drawerOwnerText">—</strong></div>
+        <div><span>Contact</span><strong id="drawerContactText">—</strong></div>
+        <div><span>Survey Visit</span><strong id="drawerFollowupText">—</strong></div>
+        <div class="wide"><span>Remarks</span><strong id="drawerRemarksText">—</strong></div>
+        <div><span>Appointment</span><strong id="drawerAppointmentText">—</strong></div>
+        <div><span>Team</span><strong id="drawerTeamText">—</strong></div>
+      </div>
+      <div class="legacy-box" id="drawerLegacy"></div>
+      <div class="drawer-shortcuts">
+        <button type="button" class="primary-btn" id="drawerSurveyBtn">Survey Visit</button>
+        <button type="button" class="ghost-btn" id="drawerAppointmentBtn">Appointment</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+  <script src="data.js?v=rehearsal1"></script>
+  <script src="jszip.min.js"></script>
+<script src="app.js?v=rehearsal1"></script>
+
+<div id="rehearsalAppBadge" style="
+position:fixed;left:14px;bottom:14px;z-index:99998;
+background:#0b5ea8;color:#fff;border:1px solid rgba(255,255,255,.6);
+padding:8px 11px;border-radius:999px;
+font:800 11px/1.2 system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+box-shadow:0 7px 22px rgba(0,0,0,.16);letter-spacing:.04em">
+ELU APP · REHEARSAL
+</div>
+<button id="installRehearsalApp" type="button" hidden style="
+position:fixed;right:14px;bottom:14px;z-index:99999;
+border:0;border-radius:12px;padding:10px 14px;
+background:#0b5ea8;color:white;font:800 12px system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+box-shadow:0 7px 22px rgba(0,0,0,.18);cursor:pointer">
+Install ELU App
+</button>
+<script src="pwa-install.js"></script>
+
+</body>
+</html>
