@@ -7,8 +7,8 @@ const APP_ASSETS=[
   "./app.js?v=rehearsal1",
   "./jszip.min.js",
   "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
 self.addEventListener("install",event=>{
