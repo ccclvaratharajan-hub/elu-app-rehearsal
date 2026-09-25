@@ -7,10 +7,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ELU Upgrading">
-  <title>ELU Upgrading — Rehearsal V4</title>
+  <title>ELU Upgrading — Rehearsal V5</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=rehearsal4">
+  <link rel="stylesheet" href="styles.css?v=rehearsal5">
 </head>
 <body>
   <div class="app-shell">
@@ -53,98 +53,133 @@
       </header>
 
       <section class="view active" id="view-dashboard">
-        <div class="v4-hero">
-          <div class="v4-hero-copy">
-            <span class="v4-kicker">PR3 COMMAND CENTRE</span>
-            <h1>ELU Upgrading – Pasir Ris</h1>
-            <p>Survey, appointments, unit status, photos and progress — complete view across all 6 zones.</p>
-            <div class="v4-project-pills">
-              <span><i>▣</i><strong>6</strong> Zones</span>
-              <span><i>▦</i><strong>38</strong> Blocks</span>
-              <span><i>♟</i><strong>2,341</strong> Units</span>
-            </div>
-          </div>
-          <div class="v4-estate-scene" aria-hidden="true">
-            <div class="v4-building b1"></div><div class="v4-building b2"></div><div class="v4-building b3"></div><div class="v4-building b4"></div>
-            <div class="v4-tree t1"></div><div class="v4-tree t2"></div><div class="v4-tree t3"></div>
-          </div>
-          <div class="v4-overall-card">
-            <div class="v4-overall-head"><strong>Overall Progress</strong><span>→</span></div>
-            <div class="v4-overall-body">
-              <div class="v4-progress-ring"><div><strong>54%</strong></div></div>
-              <div class="v4-overall-list">
-                <div><b>1,297</b><span>Opt-in</span></div>
-                <div><b>63</b><span>Pending</span></div>
-                <div><b>915</b><span>No Response</span></div>
-                <div><b>26</b><span>Opt-out</span></div>
+        <div class="v5-dashboard-shell">
+
+          <section class="v5-command-hero">
+            <div class="v5-hero-glow g1"></div>
+            <div class="v5-hero-glow g2"></div>
+
+            <div class="v5-hero-left">
+              <div class="v5-command-chip"><span></span> PR3 · LIVE COMMAND CENTRE</div>
+              <h1>ELU Upgrading <em>Pasir Ris</em></h1>
+              <p>One premium workspace for daily appointments, resident response, work completion, photos and project progress.</p>
+
+              <div class="v5-hero-pill-row">
+                <div><span>◉</span><b>6</b><small>Zones</small></div>
+                <div><span>▦</span><b>38</b><small>Blocks</small></div>
+                <div><span>♟</span><b>2,341</b><small>Total Units</small></div>
+                <div class="ok"><span>✓</span><b>Online</b><small>System Status</small></div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="v4-kpis">
-          <article class="v4-kpi k-green"><span>✓</span><div><strong>1,297</strong><b>Opt-in / Agree</b><small>55% of total units</small></div><i style="--w:55%"></i></article>
-          <article class="v4-kpi k-pink"><span>▣</span><div><strong>25</strong><b>Confirmations</b><small>Active appointments</small></div><i style="--w:26%"></i></article>
-          <article class="v4-kpi k-blue"><span>◷</span><div><strong>63</strong><b>Pending Confirmation</b><small>Date waiting</small></div><i style="--w:32%"></i></article>
-          <article class="v4-kpi k-cyan"><span>▣</span><div><strong>1,272</strong><b>Work Completed</b><small>54% of project</small></div><i style="--w:54%"></i></article>
-          <article class="v4-kpi k-amber"><span>•••</span><div><strong>958</strong><b>No Response</b><small>Requires follow-up</small></div><i style="--w:48%"></i></article>
-          <article class="v4-kpi k-red"><span>×</span><div><strong>23</strong><b>Opt-out</b><small>Resident declined</small></div><i style="--w:14%"></i></article>
-        </div>
-
-        <div class="v4-middle-grid">
-          <article class="v4-card v4-zone-card">
-            <div class="v4-card-head"><div><span>▥</span><h3>Zone Progress Overview</h3></div><button>View All Zones →</button></div>
-            <div class="v4-zone-cards">
-              <div class="z-card z1"><div><b>● Zone 1</b><strong>96%</strong></div><small>Blk 564 – 569</small><progress value="96" max="100"></progress><em>485 / 504 units completed</em></div>
-              <div class="z-card z2"><div><b>● Zone 2</b><strong>95%</strong></div><small>Blk 544 – 550</small><progress value="95" max="100"></progress><em>290 / 304 units completed</em></div>
-              <div class="z-card z3"><div><b>● Zone 3</b><strong>91%</strong></div><small>Blk 531 – 536</small><progress value="91" max="100"></progress><em>298 / 328 units completed</em></div>
-              <div class="z-card z4"><div><b>● Zone 4</b><strong>0%</strong></div><small>Blk 557 – 562</small><progress value="0" max="100"></progress><em>0 / 482 units completed</em></div>
-              <div class="z-card z5"><div><b>● Zone 5</b><strong>10%</strong></div><small>Blk 537 – 543</small><progress value="10" max="100"></progress><em>48 / 484 units completed</em></div>
-              <div class="z-card z6"><div><b>● Zone 6</b><strong>12%</strong></div><small>Blk 551 – 556</small><progress value="12" max="100"></progress><em>67 / 556 units completed</em></div>
-            </div>
-          </article>
-          <article class="v4-card v4-map-card">
-            <div class="v4-card-head"><div><span>▦</span><h3>Project Map – 6 Zones</h3></div><button data-go="blocks">View Blocks →</button></div>
-            <div class="v4-map">
-              <div class="map-road r1"></div><div class="map-road r2"></div><div class="map-road r3"></div>
-              <div class="map-zone mz1">Z1 564–569</div><div class="map-zone mz2">Z2 544–550</div><div class="map-zone mz3">Z3 531–536</div><div class="map-zone mz4">Z4 557–562</div><div class="map-zone mz5">Z5 537–543</div><div class="map-zone mz6">Z6 551–556</div>
-              <div class="map-label">PASIR RIS · PR3</div>
-            </div>
-          </article>
-        </div>
-
-        <div class="v4-bottom-grid">
-          <article class="v4-card v4-appointments-card">
-            <div class="v4-card-head"><div><span>▣</span><h3>Today's Appointments</h3></div><button data-go="planner">View Full Schedule →</button></div>
-            <div class="v4-appt-table">
-              <div class="v4-appt-row head"><span>Time</span><span>Zone</span><span>Block / Unit</span><span>Resident / Team</span><span>Status</span><span>Actions</span></div>
-              <div class="v4-appt-row"><span>9am–11am</span><span>Z3</span><span><b>Blk 531 · #05-322</b></span><span>Mr Chin · Team 1</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
-              <div class="v4-appt-row"><span>11am–1pm</span><span>Z3</span><span><b>Blk 531 · #05-300</b></span><span>Ms Koh · Team 1</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
-              <div class="v4-appt-row"><span>2pm–4pm</span><span>Z3</span><span><b>Blk 531 · #03-320</b></span><span>Ms Judy · Team 1</span><span class="v4-status wait">Pending</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
-              <div class="v4-appt-row"><span>4pm–6pm</span><span>Z6</span><span><b>Blk 552 · #13-87</b></span><span>Team 2</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
-            </div>
-          </article>
-          <article class="v4-card v4-photo-card">
-            <div class="v4-card-head"><div><span>▧</span><h3>Photo Workflow Today</h3></div><button data-go="photos">Open →</button></div>
-            <div class="v4-photo-main">
-              <div class="v4-photo-ring"><div><strong>68%</strong><span>READY</span></div></div>
-              <div class="v4-photo-numbers">
-                <div><i class="c1"></i><b>10</b><span>Units today</span></div><div><i class="c2"></i><b>7</b><span>Ready 3+</span></div><div><i class="c3"></i><b>28</b><span>Photos stored</span></div>
+            <div class="v5-hero-mid">
+              <div class="v5-estate">
+                <div class="tower t1"></div><div class="tower t2"></div><div class="tower t3"></div><div class="tower t4"></div><div class="tower t5"></div>
+                <div class="ground"></div>
+                <div class="tree tr1"></div><div class="tree tr2"></div><div class="tree tr3"></div>
               </div>
             </div>
-            <div class="v4-thumbs"><div></div><div></div><div></div><div></div><button>＋<small>Upload</small></button></div>
-          </article>
-          <article class="v4-card v4-quick-card">
-            <div class="v4-card-head"><div><span>⚡</span><h3>Quick Actions</h3></div></div>
-            <div class="v4-quick-list">
-              <button data-go="planner"><span>▣</span><div><b>Today's Planner</b><small>View today's appointments</small></div></button>
-              <button data-go="appointments"><span>＋</span><div><b>New Appointment</b><small>Add or reschedule</small></div></button>
-              <button data-go="photos"><span>▧</span><div><b>Upload Photos</b><small>Open photo register</small></div></button>
-              <button data-go="reports"><span>▥</span><div><b>Manager Report</b><small>Meeting outputs</small></div></button>
-              <button><span>☁</span><div><b>Backup Data</b><small>Create latest backup</small></div></button>
-              <button><span>🔒</span><div><b>Lock Application</b><small>Secure this app</small></div></button>
+
+            <div class="v5-hero-right">
+              <div class="v5-progress-card">
+                <div class="v5-progress-title"><span>Overall Project</span><b>→</b></div>
+                <div class="v5-progress-main">
+                  <div class="v5-ring"><div><strong>54%</strong><small>COMPLETED</small></div></div>
+                  <div class="v5-progress-list">
+                    <div><i class="green"></i><b>1,297</b><span>Opt-In</span></div>
+                    <div><i class="blue"></i><b>63</b><span>Pending</span></div>
+                    <div><i class="amber"></i><b>915</b><span>No Response</span></div>
+                    <div><i class="red"></i><b>26</b><span>Opt-Out</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </article>
+          </section>
+
+          <section class="v5-kpi-grid">
+            <article class="v5-kpi green"><div class="icon">✓</div><div class="copy"><span>OPT-IN AGREE</span><strong>1,297</strong><small>55% of total units</small></div><div class="spark"><i style="width:55%"></i></div></article>
+            <article class="v5-kpi pink"><div class="icon">▣</div><div class="copy"><span>CONFIRMATIONS</span><strong>25</strong><small>Active confirmed</small></div><div class="spark"><i style="width:31%"></i></div></article>
+            <article class="v5-kpi blue"><div class="icon">◷</div><div class="copy"><span>PENDING CONFIRMATION</span><strong>63</strong><small>Date waiting</small></div><div class="spark"><i style="width:38%"></i></div></article>
+            <article class="v5-kpi cyan"><div class="icon">⌂</div><div class="copy"><span>WORK COMPLETED</span><strong>1,272</strong><small>54% project</small></div><div class="spark"><i style="width:54%"></i></div></article>
+            <article class="v5-kpi amber"><div class="icon">•••</div><div class="copy"><span>NO RESPONSE</span><strong>958</strong><small>Requires follow-up</small></div><div class="spark"><i style="width:47%"></i></div></article>
+            <article class="v5-kpi red"><div class="icon">×</div><div class="copy"><span>OPT-OUT</span><strong>23</strong><small>Resident declined</small></div><div class="spark"><i style="width:14%"></i></div></article>
+          </section>
+
+          <section class="v5-main-grid">
+            <article class="v5-panel v5-zone-panel">
+              <div class="v5-panel-head">
+                <div><span class="v5-mini-label">LIVE PROGRESS</span><h3>Zone Performance</h3></div>
+                <button data-go="blocks">Open Block Board</button>
+              </div>
+              <div class="v5-zone-grid">
+                <div class="v5-zone z1"><header><b>Zone 1</b><strong>96%</strong></header><small>Blk 564–569</small><progress max="100" value="96"></progress><footer><span>485 completed</span><em>504 units</em></footer></div>
+                <div class="v5-zone z2"><header><b>Zone 2</b><strong>95%</strong></header><small>Blk 544–550</small><progress max="100" value="95"></progress><footer><span>290 completed</span><em>304 units</em></footer></div>
+                <div class="v5-zone z3"><header><b>Zone 3</b><strong>91%</strong></header><small>Blk 531–536</small><progress max="100" value="91"></progress><footer><span>298 completed</span><em>328 units</em></footer></div>
+                <div class="v5-zone z4"><header><b>Zone 4</b><strong>46%</strong></header><small>Blk 557–562</small><progress max="100" value="46"></progress><footer><span>222 completed</span><em>482 units</em></footer></div>
+                <div class="v5-zone z5"><header><b>Zone 5</b><strong>38%</strong></header><small>Blk 537–543</small><progress max="100" value="38"></progress><footer><span>57 completed</span><em>150 units</em></footer></div>
+                <div class="v5-zone z6"><header><b>Zone 6</b><strong>28%</strong></header><small>Blk 551–556</small><progress max="100" value="28"></progress><footer><span>42 completed</span><em>150 units</em></footer></div>
+              </div>
+            </article>
+
+            <article class="v5-panel v5-map-panel">
+              <div class="v5-panel-head">
+                <div><span class="v5-mini-label">SITE OVERVIEW</span><h3>Project Map</h3></div>
+                <span class="v5-live">LIVE</span>
+              </div>
+              <div class="v5-map">
+                <div class="road a"></div><div class="road b"></div><div class="road c"></div>
+                <div class="zone-box zb1"><b>Z1</b><span>564–569</span></div>
+                <div class="zone-box zb2"><b>Z2</b><span>544–550</span></div>
+                <div class="zone-box zb3"><b>Z3</b><span>531–536</span></div>
+                <div class="zone-box zb4"><b>Z4</b><span>557–562</span></div>
+                <div class="zone-box zb5"><b>Z5</b><span>537–543</span></div>
+                <div class="zone-box zb6"><b>Z6</b><span>551–556</span></div>
+                <div class="map-caption">PASIR RIS · PR3</div>
+              </div>
+            </article>
+
+            <article class="v5-panel v5-today-panel">
+              <div class="v5-panel-head">
+                <div><span class="v5-mini-label">TODAY</span><h3>Appointment Timeline</h3></div>
+                <button data-go="planner">View Full Planner</button>
+              </div>
+              <div class="v5-timeline">
+                <div class="v5-time-row"><span class="time">09:00</span><i></i><div class="appt"><strong>Blk 531 · #05-322</strong><small>Mr Chin · Team 1</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
+                <div class="v5-time-row"><span class="time">11:00</span><i></i><div class="appt"><strong>Blk 531 · #05-300</strong><small>Ms Koh · Team 1</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
+                <div class="v5-time-row"><span class="time">14:00</span><i></i><div class="appt"><strong>Blk 531 · #03-320</strong><small>Ms Judy · Team 1</small></div><span class="tag wait">Pending</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
+                <div class="v5-time-row"><span class="time">16:00</span><i></i><div class="appt"><strong>Blk 552 · #13-87</strong><small>Zone 6 · Team 2</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
+              </div>
+            </article>
+
+            <article class="v5-panel v5-photo-panel">
+              <div class="v5-panel-head">
+                <div><span class="v5-mini-label">PHOTO WORK</span><h3>Today's Photo Readiness</h3></div>
+                <button data-go="photos">Open Photo Report</button>
+              </div>
+              <div class="v5-photo-wrap">
+                <div class="v5-photo-ring"><div><strong>68%</strong><small>READY</small></div></div>
+                <div class="v5-photo-stats">
+                  <div><span class="dot green"></span><b>10</b><small>Units today</small></div>
+                  <div><span class="dot blue"></span><b>7</b><small>Ready 3+</small></div>
+                  <div><span class="dot navy"></span><b>28</b><small>Photos stored</small></div>
+                </div>
+              </div>
+              <div class="v5-thumb-row"><div></div><div></div><div></div><button>＋<small>Upload</small></button></div>
+            </article>
+
+            <article class="v5-panel v5-quick-panel">
+              <div class="v5-panel-head">
+                <div><span class="v5-mini-label">FAST ACCESS</span><h3>Quick Actions</h3></div>
+              </div>
+              <div class="v5-quick-actions">
+                <button data-go="planner"><span>▣</span><div><b>Today's Planner</b><small>Open daily work</small></div><i>›</i></button>
+                <button data-go="appointments"><span>＋</span><div><b>New Appointment</b><small>Add / reschedule</small></div><i>›</i></button>
+                <button data-go="photos"><span>▧</span><div><b>Upload Photos</b><small>Daily photo work</small></div><i>›</i></button>
+                <button data-go="reports"><span>▥</span><div><b>Meeting Report</b><small>Manager outputs</small></div><i>›</i></button>
+                <button><span>☁</span><div><b>Backup Data</b><small>Create safe copy</small></div><i>›</i></button>
+              </div>
+            </article>
+          </section>
         </div>
       </section>
 
@@ -336,6 +371,6 @@
     </div>
   </div>
 
-  <script src="ui-v3.js?v=rehearsal4"></script>
+  <script src="ui-v3.js?v=rehearsal5"></script>
 </body>
 </html>

@@ -1,17 +1,17 @@
-# ELU Upgrading — Rehearsal V4 High-Fidelity Dashboard
+# ELU Upgrading — Rehearsal V5 Mass Command Centre
 
-This is an actual coded rehearsal design, not an image mockup.
+This is a design-first, high-fidelity coded rehearsal.
 
-- Dark navy premium app shell
-- Search/header/profile bar
-- Estate-style project hero
-- Progress summary
-- Six KPI cards
-- Zone progress overview
-- Six-zone project map concept
-- Today's appointments with quick actions
-- Photo workflow card
-- Quick actions panel
+V5 makes the dashboard visually stronger than V4:
+- deeper command-centre hero
+- stronger project identity
+- richer estate visual
+- clearer project progress card
+- premium KPI hierarchy
+- stronger zone cards
+- appointment timeline
+- photo readiness workflow
+- quick actions
+- dark navy app shell retained
 
-Demo/sample data only. Production `elu-upgrading-app` is not touched.
-Other screens remain from V3 until Dashboard design approval.
+Demo/sample UI data only. Production `elu-upgrading-app` is not touched.

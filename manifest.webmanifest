@@ -1,7 +1,7 @@
 {
-  "name": "ELU Upgrading \u2014 Rehearsal V4",
+  "name": "ELU Upgrading \u2014 Rehearsal V5",
   "short_name": "ELU Upgrading",
-  "description": "High-fidelity private UI rehearsal for ELU Upgrading.",
+  "description": "Mass command-centre private UI rehearsal for ELU Upgrading.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
