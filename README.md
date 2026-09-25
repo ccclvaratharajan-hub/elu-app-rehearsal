@@ -636,3 +636,11 @@ The workbook's `Progress Summary` does not fully agree with some detailed unit r
 - Added app-style hero, compact KPI cards, today's appointments, photo workflow summary, quick actions, zone progress and recent activity.
 - Existing Appointment, Unit, Block, Survey, Photo and Meeting Report screens are unchanged.
 - Service-worker cache bumped to `elu-rehearsal-v2` so installed desktop/mobile apps can receive the update.
+
+
+## Rehearsal V2.1 — Premium Polish
+- Fixed hero overlap between total units, completion ring and skyline.
+- Improved top-header spacing.
+- Refined Today's Appointments into a compact premium table-style list.
+- Tightened KPI, quick-action, zone-progress and recent-activity alignment.
+- No data, security, appointment, photo or report logic changed.
