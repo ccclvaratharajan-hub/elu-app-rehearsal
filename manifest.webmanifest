@@ -1,14 +1,13 @@
 {
-  "name": "ELU Upgrading \u2014 Rehearsal",
+  "name": "ELU Upgrading \u2014 Rehearsal V3",
   "short_name": "ELU Upgrading",
-  "description": "Private rehearsal app for the ELU Upgrading project.",
+  "description": "Private premium UI rehearsal for ELU Upgrading.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#eef7ff",
-  "theme_color": "#0b5ea8",
-  "orientation": "any",
+  "background_color": "#eef6fd",
+  "theme_color": "#0b4f9c",
   "icons": [
     {
       "src": "icon-192.png",
