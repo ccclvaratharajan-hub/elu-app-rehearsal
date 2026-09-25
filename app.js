@@ -1,6 +1,6 @@
-const LEGACY_STORAGE_KEY="elu_rehearsal_legacy_v1";
-const PREV_STORAGE_KEY="elu_rehearsal_prev_v1";
-const SECURE_STATE_KEY="elu_rehearsal_secure_state_v1";
+const LEGACY_STORAGE_KEY="elu_rehearsal_premium_v13";
+const PREV_STORAGE_KEY="elu_rehearsal_premium_v12";
+const SECURE_STATE_KEY="elu_rehearsal_secure_state_v7";
 const AUTO_LOCK_MS=15*60*1000;
 const ZONE_BLOCKS={1:[564,565,566,567,568,569],2:[544,545,546,547,548,549,550],3:[531,532,533,534,535,536],4:[557,558,559,560,561,562],5:[537,538,539,540,541,542,543],6:[551,552,553,554,555,556]};
 const SLOTS=["9am–11am","11am–1pm","2pm–4pm","4pm–6pm"];
@@ -53,7 +53,7 @@ function baseUnit(block,floor,unit){
 function makeInitialState(){
   const units={};
   Object.entries(PROJECT_LAYOUT).forEach(([block,d])=>Object.entries(d.floors).forEach(([floor,arr])=>arr.forEach(unit=>{const u=baseUnit(block,floor,unit);units[u.key]=u})));
-  return {units,surveys:[],appointments:seedAppointments(),appointmentTombstones:[],complaints:[],createdAt:new Date().toISOString()};
+  return {units,surveys:[],appointments:seedAppointments(),appointmentTombstones:[],complaints:[],statusOverrides:{},statusAudit:[],statusDecisionSchema:2,createdAt:new Date().toISOString()};
 }
 function isUserAppointment(a){
   return ["Planner","Manual","Planner History"].includes(String(a?.source||""))||Number(a?.id)>1000000000000
@@ -129,10 +129,46 @@ function mergeSavedIntoFresh(saved){
     }
   });
 
+  // V7.56 latest-user-edit source of truth.
+  // V7.55 locked overrides are preserved as manual decisions, but the lock itself is removed.
+  fresh.statusDecisionSchema=2;
+  fresh.statusOverrides={};
+  if(saved.statusDecisionSchema>=1&&saved.statusOverrides&&typeof saved.statusOverrides==="object"){
+    Object.entries(saved.statusOverrides).forEach(([key,o])=>{
+      const status=normalizeStatus(o?.status);
+      if(!status)return;
+      fresh.statusOverrides[key]={
+        status,
+        source:"Manual",
+        reason:o?.reason||"Manual latest status",
+        updatedAt:o?.updatedAt||new Date().toISOString(),
+        decisionId:o?.decisionId||null
+      }
+    })
+  }
+  fresh.statusAudit=Array.isArray(saved.statusAudit)?[...saved.statusAudit]:[];
+
+  // One-time migration from V7.54 and earlier. Keep a confirmed Opt-Out only when
+  // it is still the latest explicit decision. A later user appointment will replace it.
+  if(!(saved.statusDecisionSchema>=1)){
+    const latestOptOutByUnit={};
+    fresh.appointments.forEach(a=>{
+      if(a?.scheduleState!=="OptOut")return;
+      const prev=latestOptOutByUnit[a.unitKey];
+      if(!prev||Number(a.id)>Number(prev.id))latestOptOutByUnit[a.unitKey]=a
+    });
+    Object.entries(latestOptOutByUnit).forEach(([key,o])=>{
+      const newerBooking=fresh.appointments.some(a=>a.unitKey===key&&Number(a.id)>Number(o.id)&&!["Rescheduled","Cancelled","History","OptOut"].includes(a?.scheduleState));
+      if(newerBooking)return;
+      fresh.statusOverrides[key]={status:"D",source:"Manual",reason:"Migrated latest Opt-Out",updatedAt:o.cancelledAt||new Date(Number(o.id)||Date.now()).toISOString(),decisionId:o.id};
+      fresh.statusAudit.push({id:`migration-${o.id}`,unitKey:key,from:"",to:"D",action:"migrate-latest-edit",source:"V7.56 migration",at:o.cancelledAt||new Date(Number(o.id)||Date.now()).toISOString()})
+    })
+  }
+
   return fresh
 }
 function loadLegacyPlainState(){
-  const keys=[LEGACY_STORAGE_KEY,PREV_STORAGE_KEY];
+  const keys=[LEGACY_STORAGE_KEY,PREV_STORAGE_KEY,"elu_rehearsal_premium_v11","elu_rehearsal_premium_v10"];
   for(const k of keys){
     try{
       const raw=localStorage.getItem(k);
@@ -141,7 +177,7 @@ function loadLegacyPlainState(){
   }
   return null
 }
-let state={units:{},surveys:[],appointments:[],complaints:[],createdAt:""};
+let state={units:{},surveys:[],appointments:[],complaints:[],statusOverrides:{},statusAudit:[],statusDecisionSchema:2,createdAt:""};
 let secureSessionKey=null;
 let securePersistChain=Promise.resolve();
 let appStarted=false;
@@ -170,7 +206,7 @@ async function encryptPayload(value,key){
   return {v:1,iv:b64FromBytes(iv),cipher:b64FromBytes(cipher)}
 }
 function secureSnapshot(){
-  return {surveys:state.surveys,appointments:state.appointments,complaints:state.complaints,createdAt:state.createdAt}
+  return {surveys:state.surveys,appointments:state.appointments,complaints:state.complaints,statusOverrides:state.statusOverrides||{},statusAudit:state.statusAudit||[],statusDecisionSchema:2,createdAt:state.createdAt}
 }
 async function securePersistNow(){
   if(!secureSessionKey||!appStarted)return;
@@ -188,7 +224,7 @@ function removeLegacyPlaintext(){
   const remove=[];
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
-    if(k&&/^elu_premium_v\d+$/.test(k))remove.push(k)
+    if(k&&/^elu_rehearsal_premium_v\d+$/.test(k))remove.push(k)
   }
   remove.forEach(k=>localStorage.removeItem(k))
 }
@@ -302,6 +338,39 @@ function appointmentHasEnded(a){
   const end=SLOT_END_MINUTES[a.slot]??slotEndMinutes(a.slot);return end==null?false:now.minutes>=Number(end);
 }
 function latestById(arr){return [...arr].sort((a,b)=>Number(b.id)-Number(a.id))[0]||null}
+function manualStatusOverride(key){
+  const o=state.statusOverrides&&state.statusOverrides[key];
+  if(!o)return null;
+  const status=normalizeStatus(o.status);
+  return status?{...o,status}:null
+}
+function hasManualStatusDecision(key){return Boolean(manualStatusOverride(key))}
+function appendStatusAudit(key,from,to,action,detail=""){
+  state.statusAudit=Array.isArray(state.statusAudit)?state.statusAudit:[];
+  state.statusAudit.push({id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,unitKey:key,from:normalizeStatus(from),to:normalizeStatus(to),action,detail,source:"Manual",at:new Date().toISOString()});
+  if(state.statusAudit.length>5000)state.statusAudit=state.statusAudit.slice(-5000)
+}
+function setManualStatusDecision(key,status,detail=""){
+  status=normalizeStatus(status);if(!status)return false;
+  state.statusOverrides=state.statusOverrides&&typeof state.statusOverrides==="object"?state.statusOverrides:{};
+  const before=currentUnitAppointmentState(key).status;
+  const prev=state.statusOverrides[key];
+  state.statusOverrides[key]={status,source:"Manual",reason:detail||"Latest manual status",updatedAt:new Date().toISOString(),decisionId:prev?.decisionId||null};
+  appendStatusAudit(key,before,status,prev?"replace-latest-edit":"set-latest-edit",detail||"Latest manual status");
+  return true
+}
+function clearManualStatusDecision(key,detail="Later explicit user edit"){
+  const o=manualStatusOverride(key);if(!o)return false;
+  delete state.statusOverrides[key];
+  appendStatusAudit(key,o.status,"","superseded-by-later-edit",detail);
+  return true
+}
+function applyLaterAppointmentEdit(key,sourceLabel="Appointment"){
+  // A later explicit user save is allowed to replace an earlier manual D decision.
+  // No special unlock/re-open step is required.
+  clearManualStatusDecision(key,`Later explicit user edit: ${sourceLabel}`);
+}
+
 function latestOptOutDecision(key){
   return latestById(state.appointments.filter(a=>a.unitKey===key&&a.scheduleState==="OptOut"))
 }
@@ -312,6 +381,7 @@ function isInactiveSchedule(a){
 }
 function activeAppointmentsForUnit(key){return state.appointments.filter(a=>a.unitKey===key&&!isInactiveSchedule(a))}
 function preferredMasterAppointment(key){
+  if(hasManualStatusDecision(key))return null;
   const arr=activeAppointmentsForUnit(key);if(!arr.length)return null;
   const pending=arr.filter(a=>a.workStatus!=="Completed"&&!appointmentHasEnded(a));
   if(pending.length){
@@ -323,12 +393,12 @@ function preferredMasterAppointment(key){
 }
 
 function currentUnitAppointmentState(key){
-  const a=preferredMasterAppointment(key);
-  const optOut=latestOptOutDecision(key);
-
-  if(optOut&&(!a||Number(optOut.id)>Number(a.id||0))){
-    return {appointment:null,status:"D",workStatus:"Pending",active:false,completed:false,optOut}
+  const manual=manualStatusOverride(key);
+  if(manual){
+    return {appointment:null,status:manual.status,workStatus:manual.status==="A"?"Completed":"Pending",active:false,completed:manual.status==="A",manualOverride:manual}
   }
+
+  const a=preferredMasterAppointment(key);
 
   if(a&&a.date){
     const completed=a.workStatus==="Completed"||appointmentHasEnded(a);
@@ -366,7 +436,7 @@ function currentUnitAppointmentState(key){
 function normalizeManualOverrides(){
   const by={};
   state.appointments.forEach(a=>{
-    if(isInactiveSchedule(a)||a.workStatus==="Completed"||appointmentHasEnded(a))return;
+    if(hasManualStatusDecision(a.unitKey)||isInactiveSchedule(a)||a.workStatus==="Completed"||appointmentHasEnded(a))return;
     (by[a.unitKey]||(by[a.unitKey]=[])).push(a)
   });
   Object.values(by).forEach(arr=>{
@@ -422,7 +492,7 @@ function save(msg){normalizeManualOverrides();rebuildAllMasters();persist();rend
 function autoCompleteAppointments(showToast=false){
   let changed=0;
   state.appointments.forEach(a=>{
-    if(!isInactiveSchedule(a)&&a.workStatus!=="Completed"&&appointmentHasEnded(a)){a.workStatus="Completed";changed++}
+    if(!hasManualStatusDecision(a.unitKey)&&!isInactiveSchedule(a)&&a.workStatus!=="Completed"&&appointmentHasEnded(a)){a.workStatus="Completed";changed++}
   });
   if(changed){rebuildAllMasters();persist();renderAll();if(showToast)toast(`${changed} appointment${changed===1?"":"s"} changed C → A`)}
 }
@@ -435,7 +505,7 @@ units:["Unit Register","Read-only master data populated automatically from your 
 complaints:["Complaint Register","Separate complaint records with unit lookup."],
 teams:["Appointment Planner","Simple read-only daily view of appointments entered in Appointment Schedule."],
 schedulemaster:["Master Appointment Schedule","Fast 22 → 21 cycle entry. The same live records feed Planner and Photo Report."],
-photos:["Photo Report","Zone-wise WhatsApp ZIP photo inbox and 22 → 21 monthly output."],
+photos:["Photo Report","Daily photo inbox with Zone-wise and Block-wise Word / PDF outputs."],
 reports:["Weekly Meeting Report","Progress Summary calculated directly from the read-only Unit Register."]
 }[view]}
 function setView(view){
@@ -457,9 +527,9 @@ function setView(view){
 }
 document.getElementById("nav").addEventListener("click",e=>{const b=e.target.closest(".nav-item");if(b)setView(b.dataset.view)});
 document.body.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)setView(b.dataset.go)});
-document.getElementById("dashboardBackupQuick")?.addEventListener("click",()=>document.getElementById("exportBackupBtn")?.click());
-document.getElementById("dashboardLockQuick")?.addEventListener("click",()=>document.getElementById("securityLogoutBtn")?.click());
-
+document.getElementById("globalUnitSearch")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();rehearsalGlobalSearch()}});
+document.getElementById("globalSearchBtn")?.addEventListener("click",rehearsalGlobalSearch);
+document.body.addEventListener("click",e=>{const b=e.target.closest("[data-rehearsal-backup]");if(b)document.getElementById("exportBackupBtn")?.click()});
 
 function zoneOptions(includeAll=false){return(includeAll?`<option value="all">All Zones</option>`:"")+Object.keys(ZONE_BLOCKS).map(z=>`<option value="${z}">Zone ${z}</option>`).join("")}
 function blockOptions(zone){return(ZONE_BLOCKS[zone]||[]).map(b=>`<option value="${b}">Blk ${b}</option>`).join("")}
@@ -570,120 +640,58 @@ document.getElementById("plannerZone").addEventListener("change",syncPlannerBloc
 document.getElementById("plannerSlot").addEventListener("change",togglePlannerCustomTime);
 document.getElementById("appointmentSlot").addEventListener("change",toggleAppointmentCustomTime);
 
+
+function rehearsalPhoneDigits(contact){
+  let d=String(contact||"").replace(/\D/g,"");
+  if(d.startsWith("00"))d=d.slice(2);
+  if(d.length===8)d="65"+d;
+  return d
+}
+function rehearsalCallHref(contact){
+  const d=rehearsalPhoneDigits(contact);return d?`tel:+${d}`:""
+}
+function rehearsalWaHref(contact){
+  const d=rehearsalPhoneDigits(contact);return d?`https://wa.me/${d}`:""
+}
+function rehearsalCommActions(contact,label="Resident"){
+  const tel=rehearsalCallHref(contact),wa=rehearsalWaHref(contact),name=esc(label||"Resident");
+  const phoneSvg=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8-7.1-1.8-12.7-7.4-14.5-14.5-.2-.8.1-1.6.8-2l2.4-1.5c.6-.4 1.3-.3 1.8.2z"/></svg>`;
+  const waSvg=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg>`;
+  if(!tel&&!wa)return `<span class="comm-disabled" title="No contact number">No contact</span>`;
+  return `<span class="comm-actions">${tel?`<a class="comm-btn call" href="${tel}" title="Call ${name}">${phoneSvg}</a>`:""}${wa?`<a class="comm-btn wa" href="${wa}" target="_blank" rel="noopener" title="WhatsApp ${name}">${waSvg}</a>`:""}</span>`
+}
+function rehearsalGlobalSearch(){
+  const input=document.getElementById("globalUnitSearch");if(!input)return;
+  const q=input.value.trim().toLowerCase();if(!q){toast("Enter Block, Unit, Name or Contact");return}
+  const compact=q.replace(/\s+/g,"");
+  const hit=unitsArray().find(u=>{
+    const ud=unitDisplay(u.floor,u.unit),hay=`${u.block} ${ud} ${u.block}-${String(u.floor).padStart(2,"0")}-${u.unit} ${u.ownerName||""} ${u.contact||""}`.toLowerCase();
+    return hay.includes(q)||hay.replace(/\s+/g,"").includes(compact)
+  });
+  if(!hit){toast("No matching unit found");return}
+  setView("blockboard");
+  document.getElementById("boardZone").value=String(hit.zone);syncBoardBlocks();
+  document.getElementById("boardBlock").value=String(hit.block);renderBoardFloorOptions();
+  document.getElementById("boardFloor").value="all";document.getElementById("boardSearch").value=unitDisplay(hit.floor,hit.unit);renderBlockBoard();
+  setTimeout(()=>openDrawer(hit.key),40)
+}
+
 function renderDashboard(){
-  const u=unitsArray(),
-        total=u.length,
-        a=u.filter(x=>x.response==="A").length,
-        c=u.filter(x=>x.response==="C").length,
-        p=u.filter(x=>x.response==="P").length,
-        d=u.filter(x=>x.response==="D").length,
-        nr=u.filter(x=>x.response==="NR").length,
-        done=u.filter(x=>x.workStatus==="Completed").length;
-
-  const agree=a+c,
-        openFollowups=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).length,
-        donePct=total?Math.round(done/total*100):0,
-        today=isoTodaySG();
-
-  document.getElementById("heroTotalUnits").textContent=total.toLocaleString();
-  const tag=document.getElementById("heroTagUnits");if(tag)tag.textContent=total.toLocaleString();
-  const orbit=document.getElementById("heroOrbit");if(orbit)orbit.style.setProperty("--pct",`${donePct*3.6}deg`);
-  const orbitText=document.getElementById("heroCompletionPct");if(orbitText)orbitText.textContent=`${donePct}%`;
-
-  document.getElementById("kpiOptIn").textContent=agree.toLocaleString();
-  document.getElementById("kpiOptInPct").textContent=`${total?Math.round(agree/total*100):0}% of total units`;
+  const u=unitsArray(),total=u.length,a=u.filter(x=>x.response==="A").length,c=u.filter(x=>x.response==="C").length,p=u.filter(x=>x.response==="P").length,d=u.filter(x=>x.response==="D").length,nr=u.filter(x=>x.response==="NR").length,done=u.filter(x=>x.workStatus==="Completed").length;
+  const agree=a+c,openFollowups=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).length,donePct=total?Math.round(done/total*100):0;
+  document.getElementById("heroTotalUnits").textContent=total.toLocaleString();const tag=document.getElementById("heroTagUnits");if(tag)tag.textContent=`${total.toLocaleString()} Units`;const orbit=document.getElementById("heroOrbit");if(orbit)orbit.style.setProperty("--pct",`${donePct*3.6}deg`);const orbitText=document.getElementById("heroCompletionPct");if(orbitText)orbitText.textContent=`${donePct}%`;
+  document.getElementById("kpiOptIn").textContent=agree.toLocaleString();document.getElementById("kpiOptInPct").textContent=`${total?Math.round(agree/total*100):0}% · A + C`;
   document.getElementById("kpiAppointments").textContent=c.toLocaleString();
   document.getElementById("kpiPending").textContent=p.toLocaleString();
-  document.getElementById("kpiCompleted").textContent=done.toLocaleString();
-  document.getElementById("kpiCompletedPct").textContent=`${donePct}% project`;
-  document.getElementById("kpiNR").textContent=nr.toLocaleString();
-  document.getElementById("kpiOptOut").textContent=d.toLocaleString();
-  document.getElementById("kpiFollowups").textContent=openFollowups.toLocaleString();
-
-  document.getElementById("zoneProgress").innerHTML=Object.keys(ZONE_BLOCKS).map(z=>{
-    const zu=u.filter(x=>x.zone===Number(z)),
-          zc=zu.filter(x=>x.workStatus==="Completed").length,
-          pct=zu.length?Math.round(zc/zu.length*100):0;
-    return `<div class="app-zone-row">
-      <div class="app-zone-label"><strong>Zone ${z}</strong><span>${pct}%</span></div>
-      <div class="app-zone-bar"><i style="width:${pct}%"></i></div>
-      <small>${zc} / ${zu.length}</small>
-    </div>`
-  }).join("");
-
-  const todayRows=state.appointments
-    .filter(x=>liveScheduleRecord(x)&&x.date===today)
-    .sort((x,y)=>String(x.team||"").localeCompare(String(y.team||""))||slotStartMinutes(x.slot)-slotStartMinutes(y.slot)||Number(x.block)-Number(y.block));
-
-  const latest=new Map();
-  todayRows.forEach(x=>{
-    const old=latest.get(x.unitKey);
-    if(!old||Number(x.id||0)>Number(old.id||0))latest.set(x.unitKey,x)
-  });
-
-  const rows=[...latest.values()];
-  const todayBox=document.getElementById("dashboardTodayAppointments");
-  todayBox.innerHTML=rows.length?rows.slice(0,8).map(x=>{
-    const u=getUnit(x.unitKey),status=currentUnitAppointmentState(x.unitKey).status;
-    const cls=status==="C"?"confirmed":status==="P"?"pending":status==="D"?"optout":"neutral";
-    return `<div class="app-appt-row">
-      <span class="app-appt-time">${esc(x.slot||"—")}</span>
-      <span class="app-appt-zone">Z${x.zone||zoneOfBlock(x.block)}</span>
-      <span class="app-appt-unit"><strong>Blk ${x.block} · ${esc(x.unitDisplay||"")}</strong><small>${esc(u?.ownerName||x.ownerName||"Name not entered")} · ${esc(x.team||"Unassigned")}</small></span>
-      <span class="app-appt-status ${cls}">${statusLabel(status)}</span>
-    </div>`
-  }).join(""):`<div class="empty-state">No appointments scheduled for today.</div>`;
-
-  const activity=[];
-  state.appointments.slice().sort((x,y)=>Number(y.id||0)-Number(x.id||0)).slice(0,4).forEach(x=>{
-    activity.push({type:"appointment",text:`Blk ${x.block} ${x.unitDisplay||""} · ${x.scheduleState==="Cancelled"?"Appointment cancelled":x.workStatus==="Completed"?"Work completed":"Appointment updated"}`})
-  });
-  state.complaints.slice().sort((x,y)=>Number(y.id||0)-Number(x.id||0)).slice(0,2).forEach(x=>{
-    activity.push({type:"complaint",text:`Blk ${x.block} ${x.unitDisplay||""} · Complaint record`})
-  });
-  document.getElementById("dashboardRecentActivity").innerHTML=activity.length?activity.slice(0,5).map((x,i)=>`
-    <div class="app-activity-row"><i class="${x.type}"></i><span>${esc(x.text)}</span><small>${i===0?"Latest":"Recent"}</small></div>
-  `).join(""):`<div class="empty-state">No recent activity yet.</div>`;
-
-  renderDashboardPhotoWork().catch(err=>console.error("Dashboard photo summary",err));
+  document.getElementById("kpiCompleted").textContent=done.toLocaleString();document.getElementById("kpiCompletedPct").textContent=`${donePct}% project`;
+  document.getElementById("kpiNR").textContent=nr.toLocaleString();document.getElementById("kpiOptOut").textContent=d.toLocaleString();document.getElementById("kpiFollowups").textContent=openFollowups.toLocaleString();
+  document.getElementById("zoneProgress").innerHTML=Object.keys(ZONE_BLOCKS).map(z=>{const zu=u.filter(x=>x.zone===Number(z)),zc=zu.filter(x=>x.workStatus==="Completed").length,za=zu.filter(x=>x.response==="A"||x.response==="C").length,zp=zu.filter(x=>x.response==="P").length,pct=zu.length?Math.round(zc/zu.length*100):0;return`<div class="zone-line"><div><div><div class="zone-name">Zone ${z}</div><div class="zone-pct">${pct}% complete</div></div><div class="zone-mini">${zc}/${zu.length}<br>${za} opt-in · ${zp} pending</div></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`}).join("");
+  const upcoming=state.appointments.filter(x=>!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x)&&x.date>=isoTodaySG()).sort((a,b)=>a.date.localeCompare(b.date)||slotStartMinutes(a.slot)-slotStartMinutes(b.slot)||Number(a.block)-Number(b.block)).slice(0,6);
+  document.getElementById("upcomingAppointments").innerHTML=upcoming.length?upcoming.map(x=>{const u=getUnit(x.unitKey),owner=x.ownerName||u?.ownerName||"Owner not entered",contact=x.contact||u?.contact||"";return `<div class="compact-item rehearsal-upcoming"><div><strong>Blk ${x.block} · ${esc(x.unitDisplay)}</strong><span>${esc(owner)} · ${esc(x.team||"Unassigned")}</span></div><small>C · ${safeDate(x.date)}<br>${esc(x.slot)}</small>${rehearsalCommActions(contact,owner)}</div>`}).join(""):`<div class="empty-state">No upcoming confirmations.</div>`;
+  const follow=state.surveys.filter(s=>s.visitDate&&s.visitDate>=isoTodaySG()).sort((a,b)=>a.visitDate.localeCompare(b.visitDate)||String(a.visitTime||"").localeCompare(String(b.visitTime||""))).slice(0,6);
+  document.getElementById("followupAttention").innerHTML=follow.length?follow.map(s=>`<div class="attention-card"><strong>Blk ${s.block} · ${esc(s.unitDisplay)}</strong><span>${esc(s.ownerName||"Name not entered")} · ${esc(s.contact||"No contact")}</span><b>${safeDate(s.visitDate)}${s.visitTime?` · ${esc(s.visitTime)}`:""}</b></div>`).join(""):`<div class="empty-state">No upcoming survey visits.</div>`;
+  renderTodayTeamBoard();
 }
-async function renderDashboardPhotoWork(){
-  const today=isoTodaySG();
-  const photos=(await photoDbAll("photos")).filter(p=>p.date===today);
-  const units=new Map();
-  photos.forEach(p=>{
-    const arr=units.get(p.unitKey)||[];
-    arr.push(p);
-    units.set(p.unitKey,arr)
-  });
-
-  let scheduled=[];
-  try{scheduled=(await photoDbAll("schedule")).filter(r=>r.date===today)}catch{}
-  const allKeys=new Set([...scheduled.map(r=>r.unitKey),...units.keys()]);
-  const totalUnits=allKeys.size;
-  const ready=[...allKeys].filter(k=>(units.get(k)||[]).length>=3).length;
-  const pct=totalUnits?Math.round(ready/totalUnits*100):0;
-
-  const ring=document.getElementById("dashboardPhotoRing");
-  if(ring)ring.style.setProperty("--photo-pct",`${pct*3.6}deg`);
-  const pctEl=document.getElementById("dashboardPhotoPct");if(pctEl)pctEl.textContent=`${pct}%`;
-  const unitEl=document.getElementById("dashboardPhotoUnits");if(unitEl)unitEl.textContent=totalUnits.toLocaleString();
-  const readyEl=document.getElementById("dashboardPhotoReady");if(readyEl)readyEl.textContent=ready.toLocaleString();
-  const countEl=document.getElementById("dashboardPhotoCount");if(countEl)countEl.textContent=photos.length.toLocaleString();
-
-  const recent=[...units.entries()]
-    .map(([key,arr])=>({key,arr:arr.sort((a,b)=>Number(a.order||0)-Number(b.order||0))}))
-    .sort((a,b)=>b.arr.length-a.arr.length)
-    .slice(0,3);
-
-  const box=document.getElementById("dashboardPhotoRecent");
-  if(!box)return;
-  box.innerHTML=recent.length?recent.map(({key,arr})=>{
-    const p=arr[0],u=getUnit(key);
-    return `<div class="app-photo-mini"><span>📷</span><div><strong>Blk ${p.block||u?.block||"—"} ${p.unitDisplay||(u?unitDisplay(u.floor,u.unit):"")}</strong><small>${arr.length} photo${arr.length===1?"":"s"} · ${arr.length>=3?"Ready":"Pending"}</small></div></div>`
-  }).join(""):`<div class="app-photo-empty">No photos stored for today.</div>`
-}
-
 function renderBlockBoard(){
   const block=Number(document.getElementById("boardBlock").value),floorFilter=document.getElementById("boardFloor").value,q=document.getElementById("boardSearch").value.trim().toLowerCase(),raw=getBlockUnits(block);
   const u=raw.map(x=>{const live=currentUnitAppointmentState(x.key),a=live.appointment;return{...x,response:live.status,workStatus:live.workStatus,appointmentDate:a?.date||"",appointmentSlot:a?.slot||"",team:a?.team||""}});
@@ -821,19 +829,22 @@ function optOutAppointmentUnit(){
   const contact=document.getElementById("appointmentContact").value.trim()||u.contact||"";
   const remarks=document.getElementById("appointmentRemarks").value.trim();
 
-  if(!confirm(`Mark Blk ${u.block} · ${unitDisplay(u.floor,u.unit)} as D · Opt-Out?`))return;
+  if(!confirm(`Save Blk ${u.block} · ${unitDisplay(u.floor,u.unit)} as D · Opt-Out?`))return;
 
+  const decisionId=Date.now();
   state.appointments.push({
-    id:Date.now(),
+    id:decisionId,
     unitKey:key,zone:u.zone,block:u.block,floor:u.floor,unit:u.unit,
     unitDisplay:unitDisplay(u.floor,u.unit),
     ownerName,contact,date:"",slot:"",team:"",
     remarks,userRemarks:true,source:"Manual",
     scheduleState:"OptOut",workStatus:"Pending"
   });
+  setManualStatusDecision(key,"D","Latest user edit: Opt-Out");
+  if(state.statusOverrides[key])state.statusOverrides[key].decisionId=decisionId;
 
   resetAppointmentForm();
-  save("D · Opt-Out saved · Block Board and Unit Register synced")
+  save("D · Opt-Out saved · latest user edit will remain until you explicitly change it")
 }
 document.getElementById("appointmentOptOutBtn").addEventListener("click",optOutAppointmentUnit);
 
@@ -854,6 +865,7 @@ function saveDirectAppointment(){
       state.appointments.push({...a,id:Date.now()+1,scheduleState:"Rescheduled",source:"Appointment History"});
       state.appointments.filter(x=>x.id!==editId&&x.unitKey===key&&!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x)).forEach(x=>x.scheduleState="Rescheduled");
     }
+    applyLaterAppointmentEdit(key,"Appointment Schedule update");
     a.unitKey=key;a.zone=u.zone;a.block=u.block;a.floor=u.floor;a.unit=u.unit;a.unitDisplay=unitDisplay(u.floor,u.unit);
     a.ownerName=ownerName;a.contact=contact;a.date=date;a.slot=slot;a.team=team;a.remarks=remarks;a.userRemarks=true;a.source="Manual";a.scheduleState="Active";
     a.workStatus=appointmentHasEnded(a)?"Completed":"Pending";
@@ -863,6 +875,7 @@ function saveDirectAppointment(){
   const active=state.appointments.filter(x=>x.unitKey===key&&!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x));
   const exact=active.find(x=>x.date===date&&x.slot===slot);
   if(exact){
+    applyLaterAppointmentEdit(key,"Appointment Schedule update");
     exact.ownerName=ownerName;exact.contact=contact;exact.team=team;exact.remarks=remarks;exact.userRemarks=true;exact.source="Manual";exact.scheduleState="Active";
     resetAppointmentForm();save("Appointment updated · no duplicate created");return
   }
@@ -873,6 +886,7 @@ function saveDirectAppointment(){
     active.forEach(x=>x.scheduleState="Rescheduled");
   }
 
+  applyLaterAppointmentEdit(key,"Appointment Schedule booking");
   const a={id:Date.now(),unitKey:key,zone:u.zone,block:u.block,floor:u.floor,unit:u.unit,unitDisplay:unitDisplay(u.floor,u.unit),ownerName,contact,date,slot,team,remarks,userRemarks:true,source:"Manual",scheduleState:"Active",workStatus:"Pending"};
   a.workStatus=appointmentHasEnded(a)?"Completed":"Pending";state.appointments.push(a);
   resetAppointmentForm();save(active.length?"Appointment rescheduled · old booking moved to history":"Appointment saved · Planner and Unit Register synced")
@@ -973,7 +987,7 @@ function renderAppointmentTable(){
             ? `<span class="register-done-note">Completed</span><button class="table-action" data-appt-edit="${a.id}">Edit</button><button class="table-action delete" data-appt-delete="${a.id}">Delete</button>`
             : `<span class="register-done-note">Completed</span>`)
         : d.status==="D"
-          ? `<span class="register-optout-note">Opt-Out</span>`
+          ? `<span class="register-optout-note">Opt-Out · Latest Edit</span><button class="table-action" data-appt-book="${u.key}">Appointment</button>`
           : `<button class="table-action" data-appt-book="${u.key}">Appointment</button>`;
 
     return `<tr>
@@ -983,7 +997,7 @@ function renderAppointmentTable(){
       <td>${a?.date?safeDate(a.date):"—"}</td>
       <td>${esc(a?.slot||"—")}</td>
       <td>${esc(owner)}</td>
-      <td>${esc(contact)}</td>
+      <td><div class="contact-cell"><span>${esc(contact)}</span>${rehearsalCommActions(contact,owner)}</div></td>
       <td>${esc(a?.team||"—")}</td>
       <td><span class="pill ${d.scheduleClass}">${esc(d.schedule)}</span></td>
       <td>${a?`<span class="pill ${String(a.source||"").includes("Excel")?"confirmed":"pending"}">${esc(a.source||"Manual")}</span>`:"—"}</td>
@@ -1100,7 +1114,7 @@ function renderPlanner(){
         <td>${esc(a.slot||"—")}</td>
         <td>Blk ${a.block}</td>
         <td><strong>${esc(a.unitDisplay||unitDisplay(a.floor,a.unit))}</strong></td>
-        <td><div class="planner-person"><strong>${esc(owner)}</strong><span>${esc(contact)}</span></div></td>
+        <td><div class="planner-person rehearsal-person"><div><strong>${esc(owner)}</strong><span>${esc(contact)}</span></div>${rehearsalCommActions(contact,owner)}</div></td>
         <td>${esc(a.remarks||"—")}</td>
         <td><button class="table-action" type="button" data-planner-open="${a.id}">Open Appointment</button></td>
       </tr>`
@@ -1187,6 +1201,7 @@ function savePlannerAppointment(){
       state.appointments.push({...a,id:Date.now()+1,scheduleState:"Rescheduled",source:"Planner History"});
     }
     state.appointments.filter(x=>x.id!==editId&&x.unitKey===key&&!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x)).forEach(x=>x.scheduleState="Rescheduled");
+    applyLaterAppointmentEdit(key,"Planner update");
     a.unitKey=key;a.zone=u.zone;a.block=u.block;a.floor=u.floor;a.unit=u.unit;a.unitDisplay=unitDisplay(u.floor,u.unit);
     a.date=date;a.slot=slot;a.team=team;a.remarks=remarks;a.source="Planner";a.scheduleState="Active";a.workStatus=appointmentHasEnded(a)?"Completed":"Pending";
     if(!a.ownerName)a.ownerName=u.ownerName||"";if(!a.contact)a.contact=u.contact||"";
@@ -1195,6 +1210,7 @@ function savePlannerAppointment(){
 
   const exact=state.appointments.find(x=>x.unitKey===key&&x.date===date&&x.slot===slot&&!isInactiveSchedule(x));
   if(exact){
+    applyLaterAppointmentEdit(key,"Planner update");
     exact.team=team;exact.remarks=remarks||exact.remarks;exact.source=exact.source||"Planner";exact.scheduleState="Active";
     exact.workStatus=appointmentHasEnded(exact)?"Completed":"Pending";
     resetPlannerForm();save("Planner updated");return
@@ -1207,6 +1223,7 @@ function savePlannerAppointment(){
     existing.forEach(x=>x.scheduleState="Rescheduled");
   }
 
+  applyLaterAppointmentEdit(key,"Planner booking");
   state.appointments.push({id:Date.now(),unitKey:key,zone:u.zone,block:u.block,floor:u.floor,unit:u.unit,unitDisplay:unitDisplay(u.floor,u.unit),ownerName:u.ownerName,contact:u.contact,date,slot,team,remarks,source:"Planner",scheduleState:"Active",workStatus:"Pending"});
   resetPlannerForm();save(existing.length?"Appointment rescheduled · old booking moved to history":"Planner updated · Master Data synced")
 }
@@ -1683,7 +1700,7 @@ document.getElementById("exportBlockChartPdfBtn").addEventListener("click",expor
 function csvCell(v){return`"${String(v??"").replace(/"/g,'""')}"`}function toCSV(rows){return rows.map(r=>r.map(csvCell).join(",")).join("\n")}function download(name,content,type="text/csv;charset=utf-8"){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500)}
 document.getElementById("exportProgressBtn").addEventListener("click",()=>{const z=document.getElementById("reportZoneFilter").value,b=document.getElementById("reportBlockFilter").value,r=buildReportRows(z,b),t=reportTotals(r);download(`ELU_Weekly_Progress_${z==="all"?"All_Zones":"Zone_"+z}.csv`,toCSV([["S/N","BLK NO.","TOTAL UNITS","OPT-IN A+C","OPT-IN %","WORK COMPLETED","COMPLETED %","PENDING P","P %","OPT-OUT D","D %","NO RESPONSE NR","NR %"],...r.map((x,i)=>[i+1,x.block,x.total,x.agree,pct(x.agreePct),x.done,pct(x.donePct),x.p,pct(x.pPct),x.d,pct(x.dPct),x.nr,pct(x.nrPct)]),["","TOTAL DU",t.total,t.agree,pct(t.agreePct),t.done,pct(t.donePct),t.p,pct(t.pPct),t.d,pct(t.dPct),t.nr,pct(t.nrPct)] ]))});
 document.getElementById("exportUnitsBtn").addEventListener("click",()=>{const r=managerReportData(),rows=unitSummaryRowsForReport();download(`ELU_Unit_Summary_${reportSafeFileScope(r)}_${isoTodaySG()}.csv`,toCSV([["Zone","Block No","Unit No","Status","Work Status","Appointment Date","Appointment Slot","Team"],...rows.map(u=>[u.zone,u.block,unitDisplay(u.floor,u.unit),u.response||"",u.workStatus||"",u.appointmentDate||"",u.appointmentSlot||"",u.team||""])]));});
-document.getElementById("exportBackupBtn").addEventListener("click",()=>{if(!confirm("Backup contains resident and appointment data. Keep it private. Continue?"))return;download(`ELU_Backup_${isoTodaySG()}.json`,JSON.stringify({surveys:state.surveys,appointments:state.appointments,complaints:state.complaints},null,2),"application/json")});
+document.getElementById("exportBackupBtn").addEventListener("click",()=>{if(!confirm("Backup contains resident and appointment data. Keep it private. Continue?"))return;download(`ELU_Backup_${isoTodaySG()}.json`,JSON.stringify({surveys:state.surveys,appointments:state.appointments,complaints:state.complaints,statusOverrides:state.statusOverrides||{},statusAudit:state.statusAudit||[],statusDecisionSchema:2},null,2),"application/json")});
 
 
 /* V7.45 — Master Schedule + integrated Photo Inbox */
@@ -1770,12 +1787,14 @@ function saveMasterScheduleEntry(){
   const active=state.appointments.filter(x=>x.unitKey===key&&!isInactiveSchedule(x)&&x.workStatus!=="Completed"&&!appointmentHasEnded(x));
   const exact=active.find(x=>x.date===date&&x.slot===slot);
   if(exact){
+    applyLaterAppointmentEdit(key,"Master Schedule update");
     exact.team=team;exact.remarks=remarks;exact.source="Master Schedule";exact.scheduleState="Active";
   }else{
     if(active.length){
       if(!confirm(`This unit already has an active booking. Reschedule to ${safeDate(date)} · ${slot}?`))return;
       active.forEach(x=>x.scheduleState="Rescheduled")
     }
+    applyLaterAppointmentEdit(key,"Master Schedule booking");
     state.appointments.push({id:Date.now(),unitKey:key,zone:u.zone,block:u.block,floor:u.floor,unit:u.unit,unitDisplay:unitDisplay(u.floor,u.unit),
       ownerName:u.ownerName||"",contact:u.contact||"",date,slot,team,remarks,source:"Master Schedule",scheduleState:"Active",workStatus:"Pending"})
   }
@@ -1798,7 +1817,7 @@ document.getElementById("masterScheduleTable").addEventListener("click",e=>{
 });
 
 /* Photo IndexedDB */
-const PHOTO_DB_NAME="ELU_Photo_Inbox_Rehearsal_V1",PHOTO_DB_VERSION=2;
+const PHOTO_DB_NAME="ELU_Photo_Inbox_Rehearsal_V7",PHOTO_DB_VERSION=2;
 function photoDb(){
   return new Promise((resolve,reject)=>{
     const req=indexedDB.open(PHOTO_DB_NAME,PHOTO_DB_VERSION);
@@ -2069,7 +2088,13 @@ document.getElementById("photoZoneTabs").addEventListener("click",e=>{
 });
 document.getElementById("photoZone").addEventListener("change",syncPhotoTargetUnits);
 document.getElementById("photoDate").addEventListener("change",syncPhotoTargetUnits);
-document.getElementById("photoCycleDate").addEventListener("change",renderPhotoCenter);
+document.getElementById("photoCycleDate").addEventListener("change",()=>{
+  const cycle=cycleForDate(document.getElementById("photoCycleDate").value||isoTodaySG());
+  document.getElementById("photoBlockReportFrom").value=cycle.start;
+  document.getElementById("photoBlockReportTo").value=cycle.end;
+  renderPhotoCenter();
+  renderBlockPhotoSummary().catch(console.error)
+});
 document.getElementById("photoDailyBoard").addEventListener("click",async e=>{
   const b=e.target.closest("[data-photo-delete]");if(!b)return;
   if(!confirm("Delete this stored photo?"))return;await photoDbDelete("photos",b.dataset.photoDelete);await renderPhotoCenter()
@@ -2132,6 +2157,71 @@ async function monthlyPhotoGroups(zone,cycle){
   }
   return groups.sort((a,b)=>a.date.localeCompare(b.date)||String(a.team).localeCompare(String(b.team))||slotStartMinutes(a.slot)-slotStartMinutes(b.slot)||a.block-b.block||a.unitDisplay.localeCompare(b.unitDisplay,undefined,{numeric:true}))
 }
+
+function photoBlockOptions(){
+  return Object.keys(PROJECT_LAYOUT).sort((a,b)=>Number(a)-Number(b))
+    .map(b=>`<option value="${b}">Blk ${b} · Zone ${zoneOfBlock(b)}</option>`).join("")
+}
+async function blockPhotoGroups(block,fromDate,toDate){
+  const all=(await photoDbAll("photos")).filter(p=>Number(p.block)===Number(block)&&p.date>=fromDate&&p.date<=toDate);
+  const map=new Map();
+  for(const p of all){const k=`${p.date}|${p.unitKey}`;if(!map.has(k))map.set(k,[]);map.get(k).push(p)}
+  const groups=[];
+  for(const ps of map.values()){
+    ps.sort((a,b)=>Number(a.order||0)-Number(b.order||0));
+    groups.push({date:ps[0].date,unitKey:ps[0].unitKey,block:Number(ps[0].block),unitDisplay:ps[0].unitDisplay,
+      photos:photoReportOrder(ps),storedCount:ps.length})
+  }
+  return groups.sort((a,b)=>a.date.localeCompare(b.date)||a.unitDisplay.localeCompare(b.unitDisplay,undefined,{numeric:true}))
+}
+async function renderBlockPhotoSummary(){
+  const box=document.getElementById("photoBlockSummary");if(!box)return;
+  const block=Number(document.getElementById("photoBlockReportBlock").value||0);
+  const from=document.getElementById("photoBlockReportFrom").value,to=document.getElementById("photoBlockReportTo").value;
+  if(!block||!from||!to){box.innerHTML="";return}
+  const groups=await blockPhotoGroups(block,from,to),photos=groups.reduce((n,g)=>n+g.storedCount,0),ready=groups.filter(g=>g.photos.length>=3).length;
+  box.innerHTML=`<div><strong>Blk ${block}</strong><span>${groups.length} unit-day${groups.length===1?"":"s"}</span></div>
+  <div><strong>${photos}</strong><span>stored photos</span></div><div><strong>${ready}</strong><span>ready with 3+</span></div>
+  <div><strong>${safeDate(from)} → ${safeDate(to)}</strong><span>report range</span></div>`
+}
+async function buildBlockPhotoDocx(groups,block,from,to){
+  const zip=new JSZip(),rels=[],media=[];let rn=2,docId=1;const pages=[];
+  for(let p=0;p<groups.length;p+=6){
+    const rows=groups.slice(p,p+6),refs=[];
+    for(let i=0;i<rows.length;i++){refs[i]=[];for(let j=0;j<3;j++){
+      const ph=rows[i].photos[j];if(!ph){refs[i][j]=null;continue}
+      const rId=`rId${rn++}`,n=media.length+1;rels.push({rId,target:`media/image${n}.jpg`});media.push({target:`media/image${n}.jpg`,blob:ph.blob});
+      refs[i][j]={photo:ph,rId,docId:docId++}
+    }}
+    pages.push(photoP(`ELECTRICAL LOAD UPGRADING WORKS (ELU) AT BLOCK ${block} PASIR RIS STREET 51 · ${safeDate(from)} TO ${safeDate(to)}`,true,18)+photoPageTable(rows,refs));
+    if(p+6<groups.length)pages.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>')
+  }
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${pages.join("")}<w:sectPr><w:pgSz w:w="11907" w:h="16839"/><w:pgMar w:top="255" w:right="238" w:bottom="255" w:left="238"/></w:sectPr></w:body></w:document>`;
+  const dr=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${rels.map(r=>`<Relationship Id="${r.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="${r.target}"/>`).join("")}</Relationships>`;
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="16"/></w:rPr></w:style></w:styles>`;
+  const types=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`;
+  const rr=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+  zip.file("[Content_Types].xml",types);zip.folder("_rels").file(".rels",rr);zip.folder("word").file("document.xml",doc);zip.folder("word").file("styles.xml",styles);zip.folder("word").folder("_rels").file("document.xml.rels",dr);
+  for(const m of media)zip.folder("word").file(m.target,m.blob);
+  return zip.generateAsync({type:"blob",compression:"DEFLATE"})
+}
+async function generateBlockPhotoWord(){
+  const block=Number(document.getElementById("photoBlockReportBlock").value),from=document.getElementById("photoBlockReportFrom").value,to=document.getElementById("photoBlockReportTo").value;
+  if(!block||!from||!to){toast("Select Block, From and To dates");return} if(from>to){toast("From date cannot be after To date");return}
+  const groups=await blockPhotoGroups(block,from,to);if(!groups.length){toast(`No stored photos for Blk ${block} in this date range`);return}
+  if(groups.some(g=>g.photos.length<3)&&!confirm("Some units have fewer than 3 photos. Generate Word with blank cells?"))return;
+  const blob=await buildBlockPhotoDocx(groups,block,from,to),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`ELU_Photo_Report_Blk${block}_${from}_to_${to}.docx`;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);toast(`Block ${block} Word report downloaded`)
+}
+async function generateBlockPhotoPdf(){
+  const block=Number(document.getElementById("photoBlockReportBlock").value),from=document.getElementById("photoBlockReportFrom").value,to=document.getElementById("photoBlockReportTo").value;
+  if(!block||!from||!to){toast("Select Block, From and To dates");return} if(from>to){toast("From date cannot be after To date");return}
+  const groups=await blockPhotoGroups(block,from,to);if(!groups.length){toast(`No stored photos for Blk ${block} in this date range`);return}
+  const win=window.open("","_blank","width=1100,height=900");if(!win){toast("Allow pop-ups for Print / PDF");return}
+  const urls=[],cards=groups.map(g=>`<div class="r"><div class="h"><b>${safeDate(g.date)}</b><b>Blk${g.block}${g.unitDisplay}</b><b>BEFORE</b><b>AFTER</b></div><div class="p"><div>${safeDate(g.date)}</div>${[0,1,2].map(i=>{if(!g.photos[i])return"<div></div>";const u=URL.createObjectURL(g.photos[i].blob);urls.push(u);return `<div><img src="${u}"></div>`}).join("")}</div></div>`).join("");
+  win.document.write(`<!doctype html><html><head><title>ELU Blk ${block} Photo Report</title><style>@page{size:A4 portrait;margin:5mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact}body{font-family:Arial;margin:0}.title{text-align:center;font-weight:700;font-size:10px;margin:2px 0}.sub{text-align:center;font-size:8px;margin-bottom:4px}.r{break-inside:avoid}.h,.p{display:grid;grid-template-columns:9% 23% 34% 34%}.h>*,.p>*{border:1px solid #000;padding:2px;text-align:center;font-size:8px}.p>*{height:43mm;display:flex;align-items:center;justify-content:center}.p img{max-width:100%;max-height:100%;object-fit:contain}</style></head><body><div class="title">ELECTRICAL LOAD UPGRADING WORKS (ELU) AT BLOCK ${block} PASIR RIS STREET 51</div><div class="sub">${safeDate(from)} TO ${safeDate(to)}</div>${cards}<script>onload=()=>setTimeout(()=>print(),400)<\/script></body></html>`);win.document.close();setTimeout(()=>urls.forEach(URL.revokeObjectURL),60000)
+}
+
 async function markPhotoExport(zone,cycle,type){
   await photoDbPut("meta",{key:`export:${zone}:${cycle.id}`,zone,cycleId:cycle.id,cycleStart:cycle.start,cycleEnd:cycle.end,cleanup:cycle.cleanup,type,exportedAt:new Date().toISOString()})
 }
@@ -2164,6 +2254,9 @@ async function generateMonthlyPhotoPdf(){
 }
 document.getElementById("photoWordBtn").addEventListener("click",()=>generateMonthlyPhotoWord().catch(e=>{console.error(e);toast("Word report generation failed")}));
 document.getElementById("photoPdfBtn").addEventListener("click",()=>generateMonthlyPhotoPdf().catch(e=>{console.error(e);toast("PDF report generation failed")}));
+document.getElementById("photoBlockWordBtn").addEventListener("click",()=>generateBlockPhotoWord().catch(e=>{console.error(e);toast("Block Word report generation failed")}));
+document.getElementById("photoBlockPdfBtn").addEventListener("click",()=>generateBlockPhotoPdf().catch(e=>{console.error(e);toast("Block PDF report generation failed")}));
+["photoBlockReportBlock","photoBlockReportFrom","photoBlockReportTo"].forEach(id=>document.getElementById(id).addEventListener("change",()=>renderBlockPhotoSummary().catch(console.error)));
 
 async function photoAutoCleanup(){
   try{
@@ -2180,9 +2273,17 @@ function initPhotoCenter(){
   document.getElementById("photoZone").value="1";
   document.getElementById("photoDate").value=isoTodaySG();
   document.getElementById("photoCycleDate").value=isoTodaySG();
+  const cycle=cycleForDate(isoTodaySG()),blockSel=document.getElementById("photoBlockReportBlock");
+  if(blockSel){
+    blockSel.innerHTML=photoBlockOptions();
+    blockSel.value=Object.keys(PROJECT_LAYOUT).sort((a,b)=>Number(a)-Number(b))[0]||"531";
+    document.getElementById("photoBlockReportFrom").value=cycle.start;
+    document.getElementById("photoBlockReportTo").value=cycle.end
+  }
   syncPhotoZoneTabs();
   syncPhotoScheduleBlocks();
-  syncPhotoTargetUnits()
+  syncPhotoTargetUnits();
+  renderBlockPhotoSummary().catch(console.error)
 }
 
 function renderAll(){rebuildAllMasters();renderDashboard();renderBlockBoard();renderSurveyTable();renderAppointmentTable();renderUnitTable();renderComplaintTable();renderPlanner();renderMasterSchedule();renderReport();if(document.getElementById("photos")?.classList.contains("active"))renderPhotoCenter()}
