@@ -42,3 +42,6 @@ document.querySelectorAll(".planner-toolbar .tab").forEach(b=>b.addEventListener
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 }
+
+const v4Search=document.getElementById("v4GlobalSearch");
+if(v4Search){v4Search.addEventListener("focus",()=>document.getElementById("searchDrawer")?.classList.add("open"))}

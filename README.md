@@ -1,28 +1,17 @@
-# ELU Upgrading — Rehearsal V3 Full UI
+# ELU Upgrading — Rehearsal V4 High-Fidelity Dashboard
 
-This is a **design-first rehearsal prototype**.
+This is an actual coded rehearsal design, not an image mockup.
 
-## Important
-- Production repo `elu-upgrading-app` is NOT touched.
-- This V3 prototype uses **demo/sample UI data only**.
-- It is intended to test the full app design before reconnecting real project data and logic.
-- Existing V2 rehearsal files may remain in the repo, but `index.html` now loads only `styles.css` and `ui-v3.js`.
+- Dark navy premium app shell
+- Search/header/profile bar
+- Estate-style project hero
+- Progress summary
+- Six KPI cards
+- Zone progress overview
+- Six-zone project map concept
+- Today's appointments with quick actions
+- Photo workflow card
+- Quick actions panel
 
-## Included screens
-- Executive Dashboard
-- Appointment Schedule
-- Appointment Planner
-- Unit Register
-- Block Board
-- Survey Visits
-- Complaint Register
-- Photo Report
-- Meeting Report
-
-## Design goals
-- Premium desktop app feel
-- Compact, consistent icons and spacing
-- Strong quick actions
-- Preserved ELU status colour meanings
-- Photo workflow kept separate
-- Responsive layout for later mobile refinement
+Demo/sample data only. Production `elu-upgrading-app` is not touched.
+Other screens remain from V3 until Dashboard design approval.

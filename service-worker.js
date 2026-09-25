@@ -1,5 +1,5 @@
-const CACHE_NAME="elu-rehearsal-v3";
-const ASSETS=["./","./index.html","./styles.css?v=rehearsal3","./ui-v3.js?v=rehearsal3","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
+const CACHE_NAME="elu-rehearsal-v4";
+const ASSETS=["./","./index.html","./styles.css?v=rehearsal4","./ui-v3.js?v=rehearsal4","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(CACHE_NAME).then(x=>x.put(e.request,c)).catch(()=>{});return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html"))))});

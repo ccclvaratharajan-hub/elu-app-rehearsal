@@ -7,153 +7,142 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ELU Upgrading">
-  <title>ELU Upgrading — Rehearsal V3</title>
+  <title>ELU Upgrading — Rehearsal V4</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=rehearsal3">
+  <link rel="stylesheet" href="styles.css?v=rehearsal4">
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
+    <aside class="sidebar v4-sidebar">
+      <div class="brand v4-brand">
         <img src="icon-192.png" alt="ELU" class="brand-icon">
-        <div>
-          <strong>ELU Upgrading</strong>
-          <span>Pasir Ris · Command Centre</span>
-        </div>
+        <div><strong>ELU Upgrading</strong><span>Pasir Ris Command Centre</span></div>
       </div>
-
-      <div class="project-chip">
-        <span class="live-dot"></span>
-        <div><strong>PR3 Project</strong><small>6 Zones · 38 Blocks</small></div>
-      </div>
-
-      <nav class="nav" id="mainNav">
+      <div class="v4-project-line"><span class="live-dot"></span><div><strong>PR3 Project</strong><small>6 Zones · Live workspace</small></div></div>
+      <nav class="nav v4-nav" id="mainNav">
         <button class="nav-btn active" data-view="dashboard"><span>⌂</span><b>Dashboard</b></button>
-        <button class="nav-btn" data-view="appointments"><span>▣</span><b>Appointment Schedule</b></button>
+        <button class="nav-btn" data-view="appointments"><span>▣</span><b>Appointment Schedule</b><em>12</em></button>
         <button class="nav-btn" data-view="planner"><span>◷</span><b>Appointment Planner</b></button>
         <button class="nav-btn" data-view="units"><span>▤</span><b>Unit Register</b></button>
         <button class="nav-btn" data-view="blocks"><span>▦</span><b>Block Board</b></button>
         <button class="nav-btn" data-view="survey"><span>✓</span><b>Survey Visits</b></button>
-        <button class="nav-btn" data-view="complaints"><span>!</span><b>Complaint Register</b></button>
-        <button class="nav-btn" data-view="photos"><span>◉</span><b>Photo Report</b></button>
-        <button class="nav-btn" data-view="reports"><span>▥</span><b>Meeting Report</b></button>
+        <button class="nav-btn" data-view="complaints"><span>!</span><b>Complaint Register</b><em>3</em></button>
+        <button class="nav-btn" data-view="photos"><span>▧</span><b>Photo Report</b></button>
+        <button class="nav-btn" data-view="reports"><span>♟</span><b>Meeting Report</b></button>
       </nav>
-
-      <div class="side-bottom">
-        <button class="support-card" data-view="dashboard">
-          <span>⚡</span><div><strong>Quick Command</strong><small>Daily work hub</small></div>
-        </button>
-        <div class="rehearsal-badge">REHEARSAL V3 · DESIGN MODE</div>
+      <div class="v4-nav-divider"></div>
+      <div class="v4-secondary-nav">
+        <button><span>◆</span><b>Zone View</b><i>›</i></button>
+        <button><span>▥</span><b>Reports</b><i>›</i></button>
+        <button><span>●</span><b>Data Management</b><i>›</i></button>
+        <button><span>⚙</span><b>Settings</b><i>›</i></button>
       </div>
+      <div class="v4-online"><div class="online-icon">⌁</div><div><strong>System Online</strong><small>Rehearsal design mode</small></div></div>
     </aside>
 
     <main class="main">
-      <header class="topbar">
-        <div>
-          <span class="eyebrow">ELU UPGRADING · PASIR RIS</span>
-          <h1 id="pageTitle">Executive Dashboard</h1>
-          <p id="pageSubtitle">One premium command view for appointments, units, photos and progress.</p>
-        </div>
-        <div class="top-actions">
-          <button class="icon-btn" id="globalSearchBtn">⌕</button>
-          <div class="date-chip">25 Sept 2026</div>
-          <button class="profile-chip">Manoharan Varatharajan</button>
-          <button class="ghost-btn">Backup</button>
-          <button class="ghost-btn">Lock</button>
-        </div>
+      <header class="topbar v4-topbar">
+        <button class="v4-menu-btn" aria-label="Menu">☰</button>
+        <div class="v4-search"><span>⌕</span><input id="v4GlobalSearch" placeholder="Search by Block, Unit, Name or NR..."></div>
+        <div class="v4-top-spacer"></div>
+        <div class="v4-date-box"><span>▣</span><div><strong>25 Sept 2026</strong><small>Thursday · 10:24 AM</small></div></div>
+        <button class="v4-bell">♟<em>8</em></button>
+        <button class="v4-profile"><span class="v4-avatar">MV</span><div><strong>Manoharan Varatharajan</strong><small>Project Manager</small></div><i>⌄</i></button>
+        <button class="icon-btn" id="globalSearchBtn" hidden>⌕</button>
       </header>
 
       <section class="view active" id="view-dashboard">
-        <div class="hero">
-          <div class="hero-copy">
-            <span class="hero-kicker">● PR3 COMMAND CENTRE</span>
-            <h2>ELU Upgrading — Pasir Ris</h2>
-            <p>Fast field decisions. Clean records. Photo-ready workflow. One premium workspace across all six zones.</p>
-            <div class="hero-stats">
-              <div><strong>6</strong><span>Zones</span></div>
-              <div><strong>38</strong><span>Blocks</span></div>
-              <div><strong>2,341</strong><span>Total Units</span></div>
-              <div class="sync"><strong>✓</strong><span>System synced</span></div>
+        <div class="v4-hero">
+          <div class="v4-hero-copy">
+            <span class="v4-kicker">PR3 COMMAND CENTRE</span>
+            <h1>ELU Upgrading – Pasir Ris</h1>
+            <p>Survey, appointments, unit status, photos and progress — complete view across all 6 zones.</p>
+            <div class="v4-project-pills">
+              <span><i>▣</i><strong>6</strong> Zones</span>
+              <span><i>▦</i><strong>38</strong> Blocks</span>
+              <span><i>♟</i><strong>2,341</strong> Units</span>
             </div>
           </div>
-          <div class="hero-progress">
-            <div class="ring"><div><strong>54%</strong><span>COMPLETED</span></div></div>
-            <div class="hero-total"><strong>2,341</strong><span>Project units</span></div>
+          <div class="v4-estate-scene" aria-hidden="true">
+            <div class="v4-building b1"></div><div class="v4-building b2"></div><div class="v4-building b3"></div><div class="v4-building b4"></div>
+            <div class="v4-tree t1"></div><div class="v4-tree t2"></div><div class="v4-tree t3"></div>
           </div>
-          <div class="hero-city" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i>
-          </div>
-        </div>
-
-        <div class="kpi-grid">
-          <article class="kpi green"><span>✓</span><div><small>OPT-IN AGREE</small><strong>1,336</strong><em>57% of total</em></div></article>
-          <article class="kpi pink"><span>▣</span><div><small>CONFIRMATION</small><strong>61</strong><em>Active confirmed</em></div></article>
-          <article class="kpi blue"><span>◷</span><div><small>PENDING CONFIRMATION</small><strong>64</strong><em>Date waiting</em></div></article>
-          <article class="kpi cyan"><span>⌂</span><div><small>WORK COMPLETED</small><strong>1,275</strong><em>54% project</em></div></article>
-          <article class="kpi amber"><span>•••</span><div><small>NO RESPONSE</small><strong>915</strong><em>Requires follow-up</em></div></article>
-          <article class="kpi red"><span>×</span><div><small>OPT-OUT</small><strong>26</strong><em>Resident declined</em></div></article>
-        </div>
-
-        <div class="dashboard-grid">
-          <article class="panel span2">
-            <div class="panel-head">
-              <div><span class="eyebrow">TODAY</span><h3>Today's Appointments</h3></div>
-              <button class="text-btn" data-go="planner">View planner →</button>
-            </div>
-            <div class="appt-table">
-              <div class="appt-row head"><span>Time</span><span>Zone</span><span>Block / Unit</span><span>Resident / Team</span><span>Status</span></div>
-              <div class="appt-row"><span>9am–11am</span><span>Z3</span><span><b>Blk 531 · #05-322</b></span><span>Mr Chin · Team 1</span><span class="status confirmed">Confirmed</span></div>
-              <div class="appt-row"><span>11am–1pm</span><span>Z3</span><span><b>Blk 531 · #05-300</b></span><span>Ms Koh · Team 1</span><span class="status confirmed">Confirmed</span></div>
-              <div class="appt-row"><span>2pm–4pm</span><span>Z3</span><span><b>Blk 531 · #03-320</b></span><span>Ms Judy · Team 1</span><span class="status pending">Pending</span></div>
-              <div class="appt-row"><span>4pm–6pm</span><span>Z6</span><span><b>Blk 552 · #13-87</b></span><span>Team 2</span><span class="status confirmed">Confirmed</span></div>
-            </div>
-          </article>
-
-          <article class="panel photo-card">
-            <div class="panel-head">
-              <div><span class="eyebrow">PHOTO WORK</span><h3>Photo Workflow Today</h3></div>
-              <button class="text-btn" data-go="photos">Open →</button>
-            </div>
-            <div class="photo-summary">
-              <div class="mini-ring"><strong>68%</strong><span>READY</span></div>
-              <div class="photo-metrics">
-                <div><b>10</b><small>Units today</small></div>
-                <div><b>7</b><small>Ready 3+</small></div>
-                <div><b>28</b><small>Photos stored</small></div>
+          <div class="v4-overall-card">
+            <div class="v4-overall-head"><strong>Overall Progress</strong><span>→</span></div>
+            <div class="v4-overall-body">
+              <div class="v4-progress-ring"><div><strong>54%</strong></div></div>
+              <div class="v4-overall-list">
+                <div><b>1,297</b><span>Opt-in</span></div>
+                <div><b>63</b><span>Pending</span></div>
+                <div><b>915</b><span>No Response</span></div>
+                <div><b>26</b><span>Opt-out</span></div>
               </div>
             </div>
-          </article>
+          </div>
+        </div>
 
-          <article class="panel quick-card">
-            <div class="panel-head"><div><span class="eyebrow">SHORTCUTS</span><h3>Quick Actions</h3></div></div>
-            <div class="quick-list">
-              <button data-go="planner"><span>▣</span><div><b>Today's Planner</b><small>See active work</small></div><i>›</i></button>
-              <button data-go="appointments"><span>＋</span><div><b>New Appointment</b><small>Add or reschedule</small></div><i>›</i></button>
-              <button data-go="photos"><span>◉</span><div><b>Upload Photos</b><small>Daily photo register</small></div><i>›</i></button>
-              <button data-go="reports"><span>▥</span><div><b>Manager Report</b><small>Meeting outputs</small></div><i>›</i></button>
+        <div class="v4-kpis">
+          <article class="v4-kpi k-green"><span>✓</span><div><strong>1,297</strong><b>Opt-in / Agree</b><small>55% of total units</small></div><i style="--w:55%"></i></article>
+          <article class="v4-kpi k-pink"><span>▣</span><div><strong>25</strong><b>Confirmations</b><small>Active appointments</small></div><i style="--w:26%"></i></article>
+          <article class="v4-kpi k-blue"><span>◷</span><div><strong>63</strong><b>Pending Confirmation</b><small>Date waiting</small></div><i style="--w:32%"></i></article>
+          <article class="v4-kpi k-cyan"><span>▣</span><div><strong>1,272</strong><b>Work Completed</b><small>54% of project</small></div><i style="--w:54%"></i></article>
+          <article class="v4-kpi k-amber"><span>•••</span><div><strong>958</strong><b>No Response</b><small>Requires follow-up</small></div><i style="--w:48%"></i></article>
+          <article class="v4-kpi k-red"><span>×</span><div><strong>23</strong><b>Opt-out</b><small>Resident declined</small></div><i style="--w:14%"></i></article>
+        </div>
+
+        <div class="v4-middle-grid">
+          <article class="v4-card v4-zone-card">
+            <div class="v4-card-head"><div><span>▥</span><h3>Zone Progress Overview</h3></div><button>View All Zones →</button></div>
+            <div class="v4-zone-cards">
+              <div class="z-card z1"><div><b>● Zone 1</b><strong>96%</strong></div><small>Blk 564 – 569</small><progress value="96" max="100"></progress><em>485 / 504 units completed</em></div>
+              <div class="z-card z2"><div><b>● Zone 2</b><strong>95%</strong></div><small>Blk 544 – 550</small><progress value="95" max="100"></progress><em>290 / 304 units completed</em></div>
+              <div class="z-card z3"><div><b>● Zone 3</b><strong>91%</strong></div><small>Blk 531 – 536</small><progress value="91" max="100"></progress><em>298 / 328 units completed</em></div>
+              <div class="z-card z4"><div><b>● Zone 4</b><strong>0%</strong></div><small>Blk 557 – 562</small><progress value="0" max="100"></progress><em>0 / 482 units completed</em></div>
+              <div class="z-card z5"><div><b>● Zone 5</b><strong>10%</strong></div><small>Blk 537 – 543</small><progress value="10" max="100"></progress><em>48 / 484 units completed</em></div>
+              <div class="z-card z6"><div><b>● Zone 6</b><strong>12%</strong></div><small>Blk 551 – 556</small><progress value="12" max="100"></progress><em>67 / 556 units completed</em></div>
             </div>
           </article>
-
-          <article class="panel span2">
-            <div class="panel-head"><div><span class="eyebrow">ZONE PERFORMANCE</span><h3>Progress by Zone</h3></div><span class="live-pill">LIVE</span></div>
-            <div class="zone-grid">
-              <div><b>Zone 1</b><span>96%</span><progress max="100" value="96"></progress><small>485 / 504</small></div>
-              <div><b>Zone 2</b><span>95%</span><progress max="100" value="95"></progress><small>290 / 304</small></div>
-              <div><b>Zone 3</b><span>91%</span><progress max="100" value="91"></progress><small>298 / 328</small></div>
-              <div><b>Zone 4</b><span>46%</span><progress max="100" value="46"></progress><small>222 / 482</small></div>
-              <div><b>Zone 5</b><span>38%</span><progress max="100" value="38"></progress><small>57 / 150</small></div>
-              <div><b>Zone 6</b><span>28%</span><progress max="100" value="28"></progress><small>42 / 150</small></div>
+          <article class="v4-card v4-map-card">
+            <div class="v4-card-head"><div><span>▦</span><h3>Project Map – 6 Zones</h3></div><button data-go="blocks">View Blocks →</button></div>
+            <div class="v4-map">
+              <div class="map-road r1"></div><div class="map-road r2"></div><div class="map-road r3"></div>
+              <div class="map-zone mz1">Z1 564–569</div><div class="map-zone mz2">Z2 544–550</div><div class="map-zone mz3">Z3 531–536</div><div class="map-zone mz4">Z4 557–562</div><div class="map-zone mz5">Z5 537–543</div><div class="map-zone mz6">Z6 551–556</div>
+              <div class="map-label">PASIR RIS · PR3</div>
             </div>
           </article>
+        </div>
 
-          <article class="panel activity-card">
-            <div class="panel-head"><div><span class="eyebrow">RECENT</span><h3>Recent Activity</h3></div></div>
-            <div class="activity-list">
-              <div><i class="green-dot"></i><span>Appointment confirmed · Blk 551 #13-91</span><small>10m</small></div>
-              <div><i class="blue-dot"></i><span>Photo report uploaded · Blk 551 #13-92</span><small>28m</small></div>
-              <div><i class="amber-dot"></i><span>Appointment rescheduled · Blk 552 #02-15</span><small>1h</small></div>
-              <div><i class="red-dot"></i><span>Complaint updated · Blk 553 #10-27</span><small>3h</small></div>
+        <div class="v4-bottom-grid">
+          <article class="v4-card v4-appointments-card">
+            <div class="v4-card-head"><div><span>▣</span><h3>Today's Appointments</h3></div><button data-go="planner">View Full Schedule →</button></div>
+            <div class="v4-appt-table">
+              <div class="v4-appt-row head"><span>Time</span><span>Zone</span><span>Block / Unit</span><span>Resident / Team</span><span>Status</span><span>Actions</span></div>
+              <div class="v4-appt-row"><span>9am–11am</span><span>Z3</span><span><b>Blk 531 · #05-322</b></span><span>Mr Chin · Team 1</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
+              <div class="v4-appt-row"><span>11am–1pm</span><span>Z3</span><span><b>Blk 531 · #05-300</b></span><span>Ms Koh · Team 1</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
+              <div class="v4-appt-row"><span>2pm–4pm</span><span>Z3</span><span><b>Blk 531 · #03-320</b></span><span>Ms Judy · Team 1</span><span class="v4-status wait">Pending</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
+              <div class="v4-appt-row"><span>4pm–6pm</span><span>Z6</span><span><b>Blk 552 · #13-87</b></span><span>Team 2</span><span class="v4-status ok">Confirmed</span><span class="v4-actions"><button>☎</button><button>◉</button><button>✎</button></span></div>
+            </div>
+          </article>
+          <article class="v4-card v4-photo-card">
+            <div class="v4-card-head"><div><span>▧</span><h3>Photo Workflow Today</h3></div><button data-go="photos">Open →</button></div>
+            <div class="v4-photo-main">
+              <div class="v4-photo-ring"><div><strong>68%</strong><span>READY</span></div></div>
+              <div class="v4-photo-numbers">
+                <div><i class="c1"></i><b>10</b><span>Units today</span></div><div><i class="c2"></i><b>7</b><span>Ready 3+</span></div><div><i class="c3"></i><b>28</b><span>Photos stored</span></div>
+              </div>
+            </div>
+            <div class="v4-thumbs"><div></div><div></div><div></div><div></div><button>＋<small>Upload</small></button></div>
+          </article>
+          <article class="v4-card v4-quick-card">
+            <div class="v4-card-head"><div><span>⚡</span><h3>Quick Actions</h3></div></div>
+            <div class="v4-quick-list">
+              <button data-go="planner"><span>▣</span><div><b>Today's Planner</b><small>View today's appointments</small></div></button>
+              <button data-go="appointments"><span>＋</span><div><b>New Appointment</b><small>Add or reschedule</small></div></button>
+              <button data-go="photos"><span>▧</span><div><b>Upload Photos</b><small>Open photo register</small></div></button>
+              <button data-go="reports"><span>▥</span><div><b>Manager Report</b><small>Meeting outputs</small></div></button>
+              <button><span>☁</span><div><b>Backup Data</b><small>Create latest backup</small></div></button>
+              <button><span>🔒</span><div><b>Lock Application</b><small>Secure this app</small></div></button>
             </div>
           </article>
         </div>
@@ -347,6 +336,6 @@
     </div>
   </div>
 
-  <script src="ui-v3.js?v=rehearsal3"></script>
+  <script src="ui-v3.js?v=rehearsal4"></script>
 </body>
 </html>
