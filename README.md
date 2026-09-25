@@ -1,17 +1,11 @@
-# ELU Upgrading — Rehearsal V5 Mass Command Centre
+# ELU Upgrading — Rehearsal V6
 
-This is a design-first, high-fidelity coded rehearsal.
+Design-first rehearsal build.
 
-V5 makes the dashboard visually stronger than V4:
-- deeper command-centre hero
-- stronger project identity
-- richer estate visual
-- clearer project progress card
-- premium KPI hierarchy
-- stronger zone cards
-- appointment timeline
-- photo readiness workflow
-- quick actions
-- dark navy app shell retained
-
-Demo/sample UI data only. Production `elu-upgrading-app` is not touched.
+- Premium command-centre hero and daily pulse
+- Proper visual phone/call action
+- Proper visual WhatsApp action
+- Message/reminder and edit actions
+- Richer appointments, photo workflow and quick actions
+- Communication buttons are design/demo only for now
+- Production ELU app/data is untouched

@@ -45,3 +45,5 @@ if("serviceWorker" in navigator){
 
 const v4Search=document.getElementById("v4GlobalSearch");
 if(v4Search){v4Search.addEventListener("focus",()=>document.getElementById("searchDrawer")?.classList.add("open"))}
+
+let v6t=null;function v6Toast(m){let t=document.getElementById("v6toast");if(!t){t=document.createElement("div");t.id="v6toast";t.className="v6toast";document.body.appendChild(t)}t.textContent=m+" · design only";t.classList.add("show");clearTimeout(v6t);v6t=setTimeout(()=>t.classList.remove("show"),1500)}document.addEventListener("click",e=>{const b=e.target.closest("[data-demo-action]");if(b)v6Toast(b.dataset.demoAction||"Action")});

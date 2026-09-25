@@ -1,13 +1,13 @@
 {
-  "name": "ELU Upgrading \u2014 Rehearsal V5",
+  "name": "ELU Upgrading \u2014 Rehearsal V6",
   "short_name": "ELU Upgrading",
-  "description": "Mass command-centre private UI rehearsal for ELU Upgrading.",
+  "description": "Premium communication command-centre rehearsal UI",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef6fd",
-  "theme_color": "#082b52",
+  "theme_color": "#072c53",
   "icons": [
     {
       "src": "icon-192.png",

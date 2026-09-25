@@ -7,10 +7,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ELU Upgrading">
-  <title>ELU Upgrading — Rehearsal V5</title>
+  <title>ELU Upgrading — Rehearsal V6</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=rehearsal5">
+  <link rel="stylesheet" href="styles.css?v=rehearsal6">
 </head>
 <body>
   <div class="app-shell">
@@ -53,132 +53,27 @@
       </header>
 
       <section class="view active" id="view-dashboard">
-        <div class="v5-dashboard-shell">
-
-          <section class="v5-command-hero">
-            <div class="v5-hero-glow g1"></div>
-            <div class="v5-hero-glow g2"></div>
-
-            <div class="v5-hero-left">
-              <div class="v5-command-chip"><span></span> PR3 · LIVE COMMAND CENTRE</div>
-              <h1>ELU Upgrading <em>Pasir Ris</em></h1>
-              <p>One premium workspace for daily appointments, resident response, work completion, photos and project progress.</p>
-
-              <div class="v5-hero-pill-row">
-                <div><span>◉</span><b>6</b><small>Zones</small></div>
-                <div><span>▦</span><b>38</b><small>Blocks</small></div>
-                <div><span>♟</span><b>2,341</b><small>Total Units</small></div>
-                <div class="ok"><span>✓</span><b>Online</b><small>System Status</small></div>
-              </div>
+        <div class="v6dash">
+          <section class="v6hero">
+            <div class="hero-copy"><span class="live"><i></i> PR3 · LIVE PROJECT CONTROL</span><h1>ELU Upgrading <b>Pasir Ris</b></h1><p>Field operations, resident contact, appointments, photos and project reporting — one premium command centre.</p>
+              <div class="hero-stats"><div><small>ZONES</small><strong>6</strong><span>Active</span></div><div><small>BLOCKS</small><strong>38</strong><span>Coverage</span></div><div><small>UNITS</small><strong>2,341</strong><span>Households</span></div><div class="online"><small>SYSTEM</small><strong>Online</strong><span>Design mode</span></div></div>
+              <div class="hero-actions"><button data-go="planner">Open Today's Planner <b>→</b></button><button data-go="photos">Photo Workflow <b>→</b></button></div>
             </div>
-
-            <div class="v5-hero-mid">
-              <div class="v5-estate">
-                <div class="tower t1"></div><div class="tower t2"></div><div class="tower t3"></div><div class="tower t4"></div><div class="tower t5"></div>
-                <div class="ground"></div>
-                <div class="tree tr1"></div><div class="tree tr2"></div><div class="tree tr3"></div>
-              </div>
-            </div>
-
-            <div class="v5-hero-right">
-              <div class="v5-progress-card">
-                <div class="v5-progress-title"><span>Overall Project</span><b>→</b></div>
-                <div class="v5-progress-main">
-                  <div class="v5-ring"><div><strong>54%</strong><small>COMPLETED</small></div></div>
-                  <div class="v5-progress-list">
-                    <div><i class="green"></i><b>1,297</b><span>Opt-In</span></div>
-                    <div><i class="blue"></i><b>63</b><span>Pending</span></div>
-                    <div><i class="amber"></i><b>915</b><span>No Response</span></div>
-                    <div><i class="red"></i><b>26</b><span>Opt-Out</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="estate"><div class="tower a"></div><div class="tower b"></div><div class="tower c"></div><div class="tower d"></div><div class="tower e"></div><div class="ground"></div><div class="tree t1"></div><div class="tree t2"></div></div>
+            <div class="overall"><div class="oh"><div><small>PROJECT HEALTH</small><strong>Overall Progress</strong></div><span>LIVE</span></div><div class="ob"><div class="ring"><div><b>54%</b><small>COMPLETED</small></div></div><div class="olist"><div><i class="g"></i><b>1,297</b><span>Opt-In</span></div><div><i class="p"></i><b>25</b><span>Confirmed</span></div><div><i class="bl"></i><b>63</b><span>Pending</span></div><div><i class="a"></i><b>958</b><span>No Response</span></div><div><i class="r"></i><b>23</b><span>Opt-Out</span></div></div></div><div class="of"><span>Updated moments ago</span><button>Project View →</button></div></div>
           </section>
 
-          <section class="v5-kpi-grid">
-            <article class="v5-kpi green"><div class="icon">✓</div><div class="copy"><span>OPT-IN AGREE</span><strong>1,297</strong><small>55% of total units</small></div><div class="spark"><i style="width:55%"></i></div></article>
-            <article class="v5-kpi pink"><div class="icon">▣</div><div class="copy"><span>CONFIRMATIONS</span><strong>25</strong><small>Active confirmed</small></div><div class="spark"><i style="width:31%"></i></div></article>
-            <article class="v5-kpi blue"><div class="icon">◷</div><div class="copy"><span>PENDING CONFIRMATION</span><strong>63</strong><small>Date waiting</small></div><div class="spark"><i style="width:38%"></i></div></article>
-            <article class="v5-kpi cyan"><div class="icon">⌂</div><div class="copy"><span>WORK COMPLETED</span><strong>1,272</strong><small>54% project</small></div><div class="spark"><i style="width:54%"></i></div></article>
-            <article class="v5-kpi amber"><div class="icon">•••</div><div class="copy"><span>NO RESPONSE</span><strong>958</strong><small>Requires follow-up</small></div><div class="spark"><i style="width:47%"></i></div></article>
-            <article class="v5-kpi red"><div class="icon">×</div><div class="copy"><span>OPT-OUT</span><strong>23</strong><small>Resident declined</small></div><div class="spark"><i style="width:14%"></i></div></article>
-          </section>
+          <section class="pulse"><div class="pulse-title"><b>Today's Pulse</b><span>25 Sept 2026 · Thursday</span></div><div><i class="blue"></i><b>4</b><span>Appointments</span><small>2 teams active</small></div><div><i class="green"></i><b>7</b><span>Photo-ready</span><small>28 photos stored</small></div><div><i class="amber"></i><b>12</b><span>Follow-ups</span><small>Resident contact</small></div><div><i class="red"></i><b>3</b><span>Complaints</span><small>Needs action</small></div><button data-go="appointments">Daily Operations →</button></section>
 
-          <section class="v5-main-grid">
-            <article class="v5-panel v5-zone-panel">
-              <div class="v5-panel-head">
-                <div><span class="v5-mini-label">LIVE PROGRESS</span><h3>Zone Performance</h3></div>
-                <button data-go="blocks">Open Block Board</button>
-              </div>
-              <div class="v5-zone-grid">
-                <div class="v5-zone z1"><header><b>Zone 1</b><strong>96%</strong></header><small>Blk 564–569</small><progress max="100" value="96"></progress><footer><span>485 completed</span><em>504 units</em></footer></div>
-                <div class="v5-zone z2"><header><b>Zone 2</b><strong>95%</strong></header><small>Blk 544–550</small><progress max="100" value="95"></progress><footer><span>290 completed</span><em>304 units</em></footer></div>
-                <div class="v5-zone z3"><header><b>Zone 3</b><strong>91%</strong></header><small>Blk 531–536</small><progress max="100" value="91"></progress><footer><span>298 completed</span><em>328 units</em></footer></div>
-                <div class="v5-zone z4"><header><b>Zone 4</b><strong>46%</strong></header><small>Blk 557–562</small><progress max="100" value="46"></progress><footer><span>222 completed</span><em>482 units</em></footer></div>
-                <div class="v5-zone z5"><header><b>Zone 5</b><strong>38%</strong></header><small>Blk 537–543</small><progress max="100" value="38"></progress><footer><span>57 completed</span><em>150 units</em></footer></div>
-                <div class="v5-zone z6"><header><b>Zone 6</b><strong>28%</strong></header><small>Blk 551–556</small><progress max="100" value="28"></progress><footer><span>42 completed</span><em>150 units</em></footer></div>
-              </div>
-            </article>
+          <section class="v6kpis"><article class="green"><i>✓</i><div><small>OPT-IN / AGREE</small><strong>1,297</strong><span>55% of total</span></div><b>+18 this week</b></article><article class="pink"><i>▣</i><div><small>CONFIRMATIONS</small><strong>25</strong><span>Active confirmed</span></div><b>4 today</b></article><article class="blue"><i>◷</i><div><small>PENDING CONFIRMATION</small><strong>63</strong><span>Date waiting</span></div><b>12 follow-ups</b></article><article class="cyan"><i>⌂</i><div><small>WORK COMPLETED</small><strong>1,272</strong><span>54% project</span></div><b>+22 this week</b></article><article class="amber"><i>•••</i><div><small>NO RESPONSE</small><strong>958</strong><span>Needs contact</span></div><b>Priority queue</b></article><article class="red"><i>×</i><div><small>OPT-OUT</small><strong>23</strong><span>Resident declined</span></div><b>Latest edits kept</b></article></section>
 
-            <article class="v5-panel v5-map-panel">
-              <div class="v5-panel-head">
-                <div><span class="v5-mini-label">SITE OVERVIEW</span><h3>Project Map</h3></div>
-                <span class="v5-live">LIVE</span>
-              </div>
-              <div class="v5-map">
-                <div class="road a"></div><div class="road b"></div><div class="road c"></div>
-                <div class="zone-box zb1"><b>Z1</b><span>564–569</span></div>
-                <div class="zone-box zb2"><b>Z2</b><span>544–550</span></div>
-                <div class="zone-box zb3"><b>Z3</b><span>531–536</span></div>
-                <div class="zone-box zb4"><b>Z4</b><span>557–562</span></div>
-                <div class="zone-box zb5"><b>Z5</b><span>537–543</span></div>
-                <div class="zone-box zb6"><b>Z6</b><span>551–556</span></div>
-                <div class="map-caption">PASIR RIS · PR3</div>
-              </div>
-            </article>
+          <section class="v6grid">
+            <article class="v6panel zones"><header><div><small>LIVE PROGRESS</small><h3>Zone Performance</h3></div><button data-go="blocks">Open Block Board →</button></header><div class="zonegrid"><div class="zone z1"><div><b>Zone 1</b><strong>96%</strong></div><small>Blk 564–569</small><progress value="96" max="100"></progress><span>485 completed · 504 units</span></div><div class="zone z2"><div><b>Zone 2</b><strong>95%</strong></div><small>Blk 544–550</small><progress value="95" max="100"></progress><span>290 completed · 304 units</span></div><div class="zone z3"><div><b>Zone 3</b><strong>91%</strong></div><small>Blk 531–536</small><progress value="91" max="100"></progress><span>298 completed · 328 units</span></div><div class="zone z4"><div><b>Zone 4</b><strong>46%</strong></div><small>Blk 557–562</small><progress value="46" max="100"></progress><span>222 completed · 482 units</span></div><div class="zone z5"><div><b>Zone 5</b><strong>38%</strong></div><small>Blk 537–543</small><progress value="38" max="100"></progress><span>57 completed · 150 units</span></div><div class="zone z6"><div><b>Zone 6</b><strong>28%</strong></div><small>Blk 551–556</small><progress value="28" max="100"></progress><span>42 completed · 150 units</span></div></div></article>
+            <article class="v6panel map"><header><div><small>SITE OVERVIEW</small><h3>Project Map</h3></div><span class="livebadge">LIVE</span></header><div class="mapbox"><div class="road r1"></div><div class="road r2"></div><div class="road r3"></div><div class="mz z1"><b>Z1</b><span>564–569</span></div><div class="mz z2"><b>Z2</b><span>544–550</span></div><div class="mz z3"><b>Z3</b><span>531–536</span></div><div class="mz z4"><b>Z4</b><span>557–562</span></div><div class="mz z5"><b>Z5</b><span>537–543</span></div><div class="mz z6"><b>Z6</b><span>551–556</span></div><div class="legend"><span><i class="done"></i>Completed</span><span><i class="work"></i>Active</span><span><i class="next"></i>Next</span></div></div></article>
 
-            <article class="v5-panel v5-today-panel">
-              <div class="v5-panel-head">
-                <div><span class="v5-mini-label">TODAY</span><h3>Appointment Timeline</h3></div>
-                <button data-go="planner">View Full Planner</button>
-              </div>
-              <div class="v5-timeline">
-                <div class="v5-time-row"><span class="time">09:00</span><i></i><div class="appt"><strong>Blk 531 · #05-322</strong><small>Mr Chin · Team 1</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
-                <div class="v5-time-row"><span class="time">11:00</span><i></i><div class="appt"><strong>Blk 531 · #05-300</strong><small>Ms Koh · Team 1</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
-                <div class="v5-time-row"><span class="time">14:00</span><i></i><div class="appt"><strong>Blk 531 · #03-320</strong><small>Ms Judy · Team 1</small></div><span class="tag wait">Pending</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
-                <div class="v5-time-row"><span class="time">16:00</span><i></i><div class="appt"><strong>Blk 552 · #13-87</strong><small>Zone 6 · Team 2</small></div><span class="tag ok">Confirmed</span><div class="actions"><button>☎</button><button>◉</button><button>✎</button></div></div>
-              </div>
-            </article>
-
-            <article class="v5-panel v5-photo-panel">
-              <div class="v5-panel-head">
-                <div><span class="v5-mini-label">PHOTO WORK</span><h3>Today's Photo Readiness</h3></div>
-                <button data-go="photos">Open Photo Report</button>
-              </div>
-              <div class="v5-photo-wrap">
-                <div class="v5-photo-ring"><div><strong>68%</strong><small>READY</small></div></div>
-                <div class="v5-photo-stats">
-                  <div><span class="dot green"></span><b>10</b><small>Units today</small></div>
-                  <div><span class="dot blue"></span><b>7</b><small>Ready 3+</small></div>
-                  <div><span class="dot navy"></span><b>28</b><small>Photos stored</small></div>
-                </div>
-              </div>
-              <div class="v5-thumb-row"><div></div><div></div><div></div><button>＋<small>Upload</small></button></div>
-            </article>
-
-            <article class="v5-panel v5-quick-panel">
-              <div class="v5-panel-head">
-                <div><span class="v5-mini-label">FAST ACCESS</span><h3>Quick Actions</h3></div>
-              </div>
-              <div class="v5-quick-actions">
-                <button data-go="planner"><span>▣</span><div><b>Today's Planner</b><small>Open daily work</small></div><i>›</i></button>
-                <button data-go="appointments"><span>＋</span><div><b>New Appointment</b><small>Add / reschedule</small></div><i>›</i></button>
-                <button data-go="photos"><span>▧</span><div><b>Upload Photos</b><small>Daily photo work</small></div><i>›</i></button>
-                <button data-go="reports"><span>▥</span><div><b>Meeting Report</b><small>Manager outputs</small></div><i>›</i></button>
-                <button><span>☁</span><div><b>Backup Data</b><small>Create safe copy</small></div><i>›</i></button>
-              </div>
-            </article>
+            <article class="v6panel appts"><header><div><small>TODAY'S FIELD PLAN</small><h3>Appointment Timeline</h3></div><button data-go="planner">Full Planner →</button></header><div class="v6-appt"><div class="tm"><b>09:00</b><span>11:00</span></div><i class="ok"></i><div class="resident"><strong>Blk 531 · #05-322</strong><small>Mr Chin · Team 1 · Zone 3</small></div><em class="confirmed">Confirmed</em><div class="v6-contact"><button class="call" data-demo-action="Call resident"><svg viewBox="0 0 24 24"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8C8.2 19 2.6 13.4.8 6.3c-.2-.8.1-1.6.8-2L4 2.8c.6-.4 1.3-.3 1.8.2z"/></svg></button><button class="wa" data-demo-action="WhatsApp resident"><svg viewBox="0 0 24 24"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg></button><button class="msg" data-demo-action="Message / reminder"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4zm3 4h10v2H7V8zm0 4h7v2H7v-2z"/></svg></button><button class="edit" data-demo-action="Edit appointment"><svg viewBox="0 0 24 24"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5zm16.5-10.6c.4-.4.4-1 0-1.4l-2-2c-.4-.4-1-.4-1.4 0l-1.2 1.2 3.5 3.5 1.1-1.3z"/></svg></button></div></div><div class="v6-appt"><div class="tm"><b>11:00</b><span>13:00</span></div><i class="ok"></i><div class="resident"><strong>Blk 531 · #05-300</strong><small>Ms Koh · Team 1 · Zone 3</small></div><em class="confirmed">Confirmed</em><div class="v6-contact"><button class="call" data-demo-action="Call resident"><svg viewBox="0 0 24 24"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8C8.2 19 2.6 13.4.8 6.3c-.2-.8.1-1.6.8-2L4 2.8c.6-.4 1.3-.3 1.8.2z"/></svg></button><button class="wa" data-demo-action="WhatsApp resident"><svg viewBox="0 0 24 24"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg></button><button class="msg" data-demo-action="Message / reminder"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4zm3 4h10v2H7V8zm0 4h7v2H7v-2z"/></svg></button><button class="edit" data-demo-action="Edit appointment"><svg viewBox="0 0 24 24"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5zm16.5-10.6c.4-.4.4-1 0-1.4l-2-2c-.4-.4-1-.4-1.4 0l-1.2 1.2 3.5 3.5 1.1-1.3z"/></svg></button></div></div><div class="v6-appt"><div class="tm"><b>14:00</b><span>16:00</span></div><i class="wait"></i><div class="resident"><strong>Blk 531 · #03-320</strong><small>Ms Judy · Team 1 · Zone 3</small></div><em class="pending">Pending</em><div class="v6-contact"><button class="call" data-demo-action="Call resident"><svg viewBox="0 0 24 24"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8C8.2 19 2.6 13.4.8 6.3c-.2-.8.1-1.6.8-2L4 2.8c.6-.4 1.3-.3 1.8.2z"/></svg></button><button class="wa" data-demo-action="WhatsApp resident"><svg viewBox="0 0 24 24"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg></button><button class="msg" data-demo-action="Message / reminder"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4zm3 4h10v2H7V8zm0 4h7v2H7v-2z"/></svg></button><button class="edit" data-demo-action="Edit appointment"><svg viewBox="0 0 24 24"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5zm16.5-10.6c.4-.4.4-1 0-1.4l-2-2c-.4-.4-1-.4-1.4 0l-1.2 1.2 3.5 3.5 1.1-1.3z"/></svg></button></div></div><div class="v6-appt"><div class="tm"><b>16:00</b><span>18:00</span></div><i class="ok"></i><div class="resident"><strong>Blk 552 · #13-87</strong><small>Team 2 · Zone 6</small></div><em class="confirmed">Confirmed</em><div class="v6-contact"><button class="call" data-demo-action="Call resident"><svg viewBox="0 0 24 24"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8C8.2 19 2.6 13.4.8 6.3c-.2-.8.1-1.6.8-2L4 2.8c.6-.4 1.3-.3 1.8.2z"/></svg></button><button class="wa" data-demo-action="WhatsApp resident"><svg viewBox="0 0 24 24"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg></button><button class="msg" data-demo-action="Message / reminder"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4zm3 4h10v2H7V8zm0 4h7v2H7v-2z"/></svg></button><button class="edit" data-demo-action="Edit appointment"><svg viewBox="0 0 24 24"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5zm16.5-10.6c.4-.4.4-1 0-1.4l-2-2c-.4-.4-1-.4-1.4 0l-1.2 1.2 3.5 3.5 1.1-1.3z"/></svg></button></div></div></article>
+            <article class="v6panel photo"><header><div><small>PHOTO WORKFLOW</small><h3>Today's Photo Readiness</h3></div><button data-go="photos">Open Photo Report →</button></header><div class="photobody"><div class="pring"><div><b>68%</b><small>READY</small></div></div><div class="pstats"><div><i class="g"></i><b>10</b><span>Units today</span></div><div><i class="bl"></i><b>7</b><span>Ready with 3+</span></div><div><i class="n"></i><b>28</b><span>Photos stored</span></div></div></div><div class="thumbs"><div><span>BEFORE</span></div><div><span>AFTER</span></div><div><span>DB</span></div><button data-go="photos">＋<small>Upload</small></button></div></article>
+            <article class="v6panel quick"><header><div><small>FAST ACCESS</small><h3>Quick Actions</h3></div></header><div class="quickgrid"><button data-go="planner"><i>▣</i><div><b>Today's Planner</b><span>Daily appointments</span></div><em>→</em></button><button data-go="appointments"><i>＋</i><div><b>New Appointment</b><span>Add / reschedule</span></div><em>→</em></button><button data-go="photos"><i>▧</i><div><b>Upload Photos</b><span>Daily photo work</span></div><em>→</em></button><button data-go="reports"><i>▥</i><div><b>Meeting Report</b><span>Manager output</span></div><em>→</em></button><button data-demo-action="WhatsApp follow-up"><i class="wa"><svg viewBox="0 0 24 24"><path d="M12 2.4a9.3 9.3 0 0 0-8 14l-1 4 4.1-1a9.3 9.3 0 1 0 4.9-17zm0 2a7.3 7.3 0 0 1 0 14.6 7.2 7.2 0 0 1-3.7-1l-.5-.3-2.4.6.6-2.3-.3-.5A7.3 7.3 0 0 1 12 4.4zm-3.8 3.8c-.2 0-.5.1-.7.4-.2.2-.9.9-.9 2.1 0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 4 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3l-1.9-.9c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.4.3-.7.2-.3-.1-1.2-.5-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.6z"/></svg></i><div><b>WhatsApp Follow-up</b><span>Resident contact</span></div><em>→</em></button><button data-demo-action="Call queue"><i class="call"><svg viewBox="0 0 24 24"><path d="M6.6 2.8l3 3-2.1 2.8c1.1 2.3 3 4.2 5.3 5.3l2.8-2.1 3 3c.5.5.6 1.2.2 1.8l-1.5 2.4c-.4.7-1.2 1-2 .8C8.2 19 2.6 13.4.8 6.3c-.2-.8.1-1.6.8-2L4 2.8c.6-.4 1.3-.3 1.8.2z"/></svg></i><div><b>Call Queue</b><span>Pending residents</span></div><em>→</em></button></div></article>
           </section>
         </div>
       </section>
@@ -371,6 +266,6 @@
     </div>
   </div>
 
-  <script src="ui-v3.js?v=rehearsal5"></script>
+  <script src="ui-v3.js?v=rehearsal6"></script>
 </body>
 </html>
