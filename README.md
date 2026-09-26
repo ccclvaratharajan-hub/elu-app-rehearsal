@@ -1,35 +1,19 @@
-# ELU Rehearsal V7 — Today Operations
+# ELU Rehearsal V9 — Command Centre
 
-Separate design checkpoint, continuing the V6 rehearsal. Production is unchanged.
+A working HTML/CSS design rehearsal based on the reference dashboard image. The production app is separate. Open `index.html` or upload the contents of this ZIP to the root of `elu-app-rehearsal` on GitHub Pages. The package includes the generated HDB hero asset, project-zone illustration, code and icons.
 
-## Open
+## Screens
 
-Extract the ZIP and open `index.html` in your browser. No build or installation is required.
+Dashboard: project hero, sample progress, status cards, six-zone view, illustrative zone diagram, two-team appointments, photo workflow and quick actions. Inner screens have their own layouts: Appointment Planner, Photo Report, Unit Register, Block Board, Survey Visits, Issues and Meeting Report. Links and navigation work across them.
 
-For GitHub Pages: upload the files INSIDE this ZIP to the root of the existing `elu-app-rehearsal` repository, replacing files with the same name. Keep this package out of `elu-upgrading-app`. The existing GitHub Pages branch/root setting can stay as it is. After the Pages build finishes, refresh the rehearsal page with Ctrl+Shift+R. Unused V6 `ui-v3.js` may remain but is no longer loaded. This package's service worker retires old rehearsal caches; V7 has no offline cache.
+## Demo behavior
 
-## New layout
+A single in-memory sample record updates the survey, planner, dashboard, read-only Unit Register, Block Board and report. The fixed slots are 9–11, 11–1, 2–4 and 4–6; Team 1 and Team 2 each have a lane. Unit duplicates and double bookings are rejected. A requires a completion date; C requires a team and appointment date. New survey entries may leave the appointment date blank. Photo upload and review are local previews. CSV exports sample records. Calls and WhatsApp open previews without contacting anyone. The activity drawer shows demo events.
 
-- Compact icon rail and command header; no hero banner or KPI card grid.
-- Horizontal zone filter with the six correct block ranges.
-- Today Operations timeline: four fixed slots, two team lanes.
-- Photo queue with before/during/after local image previews and review states.
-- Floating action dock and responsive Activity / Alerts drawer.
-- Read-only Unit Register, block board, survey workspace, issue list and meeting summary.
-- Responsive desktop, tablet and mobile layouts, accessible control labels and keyboard focus.
+All figures, owner names and unit records in this package are sample content and reset on refresh. The diagram shows correct block ranges but is an illustrative layout, not a surveyed map. The photo banner is an AI-created illustrative HDB scene, not a photograph of the project blocks. No real project data, authentication, server storage or message integration is connected.
 
-## Working rehearsal interactions
+## Upload
 
-Zone and text filters; schedule date and day controls; add/edit appointments; survey entry; issue creation/resolution; local photo previews/review; sample CSV export and report printing. All unit views use the same in-memory records. Duplicate units and conflicting bookings are rejected. A requires a completion date. C requires an assigned team.
+Extract the ZIP, then upload the files inside it to `elu-app-rehearsal`. Do not upload to the production `elu-upgrading-app`. After the Pages build, use Ctrl+Shift+R to refresh.
 
-## Design first — data later
-
-All records and activity are illustrative. Changes and selected photographs exist only in the current browser tab and reset on refresh. There is no database, login, production integration or persistent storage. Actual overall progress is not calculated from these samples. Call and WhatsApp buttons open clear previews because no real phone numbers are supplied; they do not call or send messages. An exported CSV is explicitly labelled sample data.
-
-Status colours: A green, C pink, D yellow, NR red. Appointments use 9am–11am, 11am–1pm, 2pm–4pm and 4pm–6pm. The initial date uses Singapore time. Zone 1: 564–569; Zone 2: 544–550; Zone 3: 531–536; Zone 4: 557–562; Zone 5: 537–543; Zone 6: 551–556.
-
-Creator / Admin: manoharan varatharajan
-
-## Verification
-
-JavaScript syntax and DOM interaction checks passed for all seven workspaces, zone filtering, completion-date validation, duplicate-unit prevention, slot collision prevention, survey-to-register updates, local photo review, issue updates and the activity drawer. Browser rendering/screenshots could not be verified in the build environment because the browser download was unavailable. Review the desktop and mobile appearance before using this as the next design checkpoint.
+Creator/Admin: manoharan varatharajan.
