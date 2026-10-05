@@ -1,7 +1,7 @@
 {
-  "name": "ELU Rehearsal V9 \u2014 Command Centre",
-  "short_name": "ELU Rehearsal",
-  "description": "Design rehearsal dashboard and operational workspaces, sample data only.",
+  "name": "ELU Install Demo",
+  "short_name": "ELU Demo",
+  "description": "Data-free installation test for ELU on Android and Windows",
   "id": "./",
   "start_url": "./",
   "scope": "./",
